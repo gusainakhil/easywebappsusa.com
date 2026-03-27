@@ -1,3 +1,8 @@
+<?php
+require_once __DIR__ . '/company-contact.php';
+$companyContact = ewaGetCompanyContact();
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -108,7 +113,7 @@
               <div class="contact-info-box">
                 <i class="fas fa-phone"></i>
                 <h5 class="fw-bold mb-2">Phone</h5>
-                <p class="mb-0">+1 (844) EASY-WEB</p>
+                <p class="mb-0"><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?></p>
                 <p class="text-muted small">Mon-Fri, 9AM-6PM EST</p>
               </div>
             </div>
@@ -116,7 +121,7 @@
               <div class="contact-info-box">
                 <i class="fas fa-envelope"></i>
                 <h5 class="fw-bold mb-2">Email</h5>
-                <p class="mb-0">hello@everythingeasy-usa.com</p>
+                <p class="mb-0"><?= htmlspecialchars($companyContact['email_display'], ENT_QUOTES, 'UTF-8') ?></p>
                 <p class="text-muted small">We'll respond within 24 hours</p>
               </div>
             </div>
@@ -124,8 +129,8 @@
               <div class="contact-info-box">
                 <i class="fas fa-map-marker-alt"></i>
                 <h5 class="fw-bold mb-2">Address</h5>
-                <p class="mb-0">123 Tech Boulevard</p>
-                <p class="text-muted small">New York, NY 10001, USA</p>
+                <p class="mb-0"><?= htmlspecialchars($companyContact['address_line_1'], ENT_QUOTES, 'UTF-8') ?></p>
+                <p class="text-muted small"><?= htmlspecialchars($companyContact['address_line_2'], ENT_QUOTES, 'UTF-8') ?></p>
               </div>
             </div>
           </div>
@@ -404,7 +409,7 @@
               </p>
             </div>
             <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-              <a href="tel:+18443299832" class="btn btn-warning btn-lg">
+              <a href="<?= htmlspecialchars($companyContact['phone_href'], ENT_QUOTES, 'UTF-8') ?>" class="btn btn-warning btn-lg">
                 <i class="fas fa-phone me-2"></i>Call Now
               </a>
             </div>

@@ -1,3 +1,8 @@
+<?php
+require_once __DIR__ . '/company-contact.php';
+$companyContact = ewaGetCompanyContact();
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -125,7 +130,7 @@
                 mobile apps, and digital marketing solutions.
               </p>
               <small class="text-muted">
-                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
+                <i class="fas fa-phone me-2"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
               </small>
             </div>
           </div>
@@ -146,7 +151,7 @@
                 innovative technology solutions and consulting.
               </p>
               <small class="text-muted">
-                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
+                <i class="fas fa-phone me-2"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
               </small>
             </div>
           </div>
@@ -167,7 +172,7 @@
                 throughout Texas and the Southwest region.
               </p>
               <small class="text-muted">
-                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
+                <i class="fas fa-phone me-2"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
               </small>
             </div>
           </div>
@@ -188,7 +193,7 @@
                 Miami, Orlando, Tampa, and across Florida.
               </p>
               <small class="text-muted">
-                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
+                <i class="fas fa-phone me-2"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
               </small>
             </div>
           </div>
@@ -209,7 +214,7 @@
                 cloud services, and digital marketing.
               </p>
               <small class="text-muted">
-                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
+                <i class="fas fa-phone me-2"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
               </small>
             </div>
           </div>
@@ -230,7 +235,7 @@
                 tech-forward solutions and consulting services.
               </p>
               <small class="text-muted">
-                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
+                <i class="fas fa-phone me-2"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
               </small>
             </div>
           </div>
@@ -437,7 +442,7 @@
               <a href="contact.html" class="btn btn-warning btn-lg">
                 <i class="fas fa-envelope me-2"></i>Contact Us
               </a>
-              <a href="tel:+18443299832" class="btn btn-outline-light btn-lg">
+              <a href="<?= htmlspecialchars($companyContact['phone_href'], ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-light btn-lg">
                 <i class="fas fa-phone me-2"></i>Call Now
               </a>
             </div>

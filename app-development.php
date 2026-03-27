@@ -1,3 +1,8 @@
+<?php
+require_once __DIR__ . '/company-contact.php';
+$companyContact = ewaGetCompanyContact();
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -1103,7 +1108,7 @@
           team. Whether you need iOS, Android, or cross-platform solutions, we
           deliver high-quality apps that engage users and drive business growth.
         </p>
-        <a href="tel:+18443299832" class="btn btn-warning btn-lg me-3">
+        <a href="<?= htmlspecialchars($companyContact['phone_href'], ENT_QUOTES, 'UTF-8') ?>" class="btn btn-warning btn-lg me-3">
           <i class="fas fa-phone-alt me-2"></i>Call Us Now
         </a>
         <a href="#app-hero" class="btn btn-outline-light btn-lg">

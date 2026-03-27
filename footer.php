@@ -1,3 +1,8 @@
+<?php
+require_once __DIR__ . '/company-contact.php';
+$companyContact = ewaGetCompanyContact();
+?>
+
 <!-- Footer -->
 <footer class="bg-dark text-white py-5">
   <div class="container">
@@ -132,11 +137,11 @@
           <div class="contact-item d-flex mb-3">
             <i class="fas fa-map-marker-alt me-3"></i>
             <a
-              href="https://www.google.com/maps/search/New+York,+NY+10001,+USA"
+              href="<?= htmlspecialchars($companyContact['address_href'], ENT_QUOTES, 'UTF-8') ?>"
               target="_blank"
               class="text-decoration-none"
             >
-              <span>New York, NY 10001, USA</span>
+              <span><?= htmlspecialchars($companyContact['address_display'], ENT_QUOTES, 'UTF-8') ?></span>
             </a>
           </div>
 
@@ -144,18 +149,18 @@
           <div class="contact-item d-flex mb-3">
             <i class="fas fa-envelope me-3"></i>
             <a
-              href="mailto:info@everythingeasy.com"
+              href="<?= htmlspecialchars($companyContact['email_href'], ENT_QUOTES, 'UTF-8') ?>"
               class="text-decoration-none"
             >
-              <span>info@everythingeasy.com</span>
+              <span><?= htmlspecialchars($companyContact['email_display'], ENT_QUOTES, 'UTF-8') ?></span>
             </a>
           </div>
 
           <!-- Phone -->
           <div class="contact-item d-flex">
             <i class="fas fa-phone me-3"></i>
-            <a href="tel:+18448327932" class="text-decoration-none">
-              <span>+1 (844) 832-7932</span>
+            <a href="<?= htmlspecialchars($companyContact['phone_href'], ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none">
+              <span><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?></span>
             </a>
           </div>
         </div>

@@ -1,3 +1,8 @@
+<?php
+require_once __DIR__ . '/company-contact.php';
+$companyContact = ewaGetCompanyContact();
+?>
+
 <!doctype html>
 <html lang="en">
 
@@ -47,11 +52,11 @@
         "@type": "LocalBusiness",
         "name": "EverythingEasy Technology USA",
         "url": "https://everythingeasy-usa.com",
-        "telephone": "+1-844-EASY-WEB",
+        "telephone": <?= json_encode($companyContact['phone_display']) ?>,
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "123 Tech Boulevard",
-          "addressLocality": "New York",
+          "streetAddress": <?= json_encode($companyContact['address_line_1']) ?>,
+          "addressLocality": <?= json_encode($companyContact['address_line_2']) ?>,
           "addressRegion": "NY",
           "postalCode": "10001",
           "addressCountry": "US"
@@ -1389,10 +1394,10 @@
               solution that exceeds your expectations.
             </p>
             <p style="font-size: 16px; margin-bottom: 20px">
-              <i class="fas fa-phone-alt" style="margin-right: 12px"></i>+1-844-EASY-WEB
+              <i class="fas fa-phone-alt" style="margin-right: 12px"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
             </p>
             <p style="font-size: 16px">
-              <i class="fas fa-envelope" style="margin-right: 12px"></i>hello@everythingeasy-usa.com
+              <i class="fas fa-envelope" style="margin-right: 12px"></i><?= htmlspecialchars($companyContact['email_display'], ENT_QUOTES, 'UTF-8') ?>
             </p>
           </div>
           <div class="col-lg-6">
@@ -1459,7 +1464,7 @@
               <h5 style="font-weight: 700; color: #333; margin-bottom: 10px">
                 Phone
               </h5>
-              <p style="color: #666">+1-844-EASY-WEB</p>
+              <p style="color: #666"><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?></p>
               <p style="color: #999; font-size: 13px">
                 Mon-Fri, 9 AM - 6 PM EST
               </p>
@@ -1482,7 +1487,7 @@
               <h5 style="font-weight: 700; color: #333; margin-bottom: 10px">
                 Email
               </h5>
-              <p style="color: #666">hello@everythingeasy-usa.com</p>
+              <p style="color: #666"><?= htmlspecialchars($companyContact['email_display'], ENT_QUOTES, 'UTF-8') ?></p>
               <p style="color: #999; font-size: 13px">
                 We respond within 2 hours
               </p>
@@ -1505,8 +1510,8 @@
               <h5 style="font-weight: 700; color: #333; margin-bottom: 10px">
                 Office
               </h5>
-              <p style="color: #666">123 Tech Boulevard</p>
-              <p style="color: #666">New York, NY 10001</p>
+              <p style="color: #666"><?= htmlspecialchars($companyContact['address_line_1'], ENT_QUOTES, 'UTF-8') ?></p>
+              <p style="color: #666"><?= htmlspecialchars($companyContact['address_line_2'], ENT_QUOTES, 'UTF-8') ?></p>
             </div>
           </div>
         </div>
