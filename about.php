@@ -130,7 +130,7 @@
 
   <body>
     <!-- Navbar Container -->
-     <?php include "navbar.php"; ?>
+    <?php include "navbar.php"; ?>
     <script src="js/navigation.js"></script>
     <main style="margin-top: 30px">
       <!-- Page Header -->
@@ -486,7 +486,7 @@
     </main>
 
     <!-- Footer Container -->
-     <?php include "footer.php"; ?>
+    <div id="footer-container"></div>
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>

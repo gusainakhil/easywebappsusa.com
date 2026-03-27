@@ -20,7 +20,7 @@
   </head>
   <body>
     <!-- Navbar Container -->
-     <?php include "navbar.php"; ?>
+    <?php include "nabar.php"; ?>
     <script src="js/navigation.js"></script>
 
     <main style="margin-top: 70px">

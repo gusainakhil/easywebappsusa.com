@@ -73,7 +73,7 @@
   </head>
 
   <body>
-     <?php include "navbar.php"; ?>
+    <?php include "nabar.php"; ?>
     <script src="js/navigation.js"></script>
     <!-- Blog Detail Section -->
     <section class="py-5" style="padding-top: 120px !important">

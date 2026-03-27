@@ -61,7 +61,7 @@
   </head>
 
   <body>
-     <?php include "navbar.php"; ?>
+    <div id="navbar-container"></div>
     <script src="js/navigation.js"></script>
     <main style="margin-top: 30px">
       <!-- Hero Section -->

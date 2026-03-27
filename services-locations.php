@@ -54,7 +54,7 @@
   </head>
 
   <body>
-     <?php include "navbar.php"; ?>
+    <?php include "nabar.php"; ?>
     <script src="js/navigation.js"></script>
     <!-- Page Header -->
     <section
