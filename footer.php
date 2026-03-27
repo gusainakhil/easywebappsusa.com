@@ -1,8 +1,7 @@
 <?php
-require_once __DIR__ . '/company-contact.php';
-$companyContact = ewaGetCompanyContact();
+require __DIR__ . '/config.php';
+$companyInfo = getCompanyInfo();
 ?>
-
 <!-- Footer -->
 <footer class="bg-dark text-white py-5">
   <div class="container">
@@ -136,31 +135,25 @@ $companyContact = ewaGetCompanyContact();
           <!-- Address -->
           <div class="contact-item d-flex mb-3">
             <i class="fas fa-map-marker-alt me-3"></i>
-            <a
-              href="<?= htmlspecialchars($companyContact['address_href'], ENT_QUOTES, 'UTF-8') ?>"
-              target="_blank"
-              class="text-decoration-none"
-            >
-              <span><?= htmlspecialchars($companyContact['address_display'], ENT_QUOTES, 'UTF-8') ?></span>
-            </a>
+            <span><?= e($companyInfo['company_address'] ?? 'USA') ?></span>
           </div>
 
           <!-- Email -->
           <div class="contact-item d-flex mb-3">
             <i class="fas fa-envelope me-3"></i>
             <a
-              href="<?= htmlspecialchars($companyContact['email_href'], ENT_QUOTES, 'UTF-8') ?>"
+              href="mailto:<?= e($companyInfo['company_email'] ?? 'info@everythingeasy.com') ?>"
               class="text-decoration-none"
             >
-              <span><?= htmlspecialchars($companyContact['email_display'], ENT_QUOTES, 'UTF-8') ?></span>
+              <span><?= e($companyInfo['company_email'] ?? 'info@everythingeasy.com') ?></span>
             </a>
           </div>
 
           <!-- Phone -->
           <div class="contact-item d-flex">
             <i class="fas fa-phone me-3"></i>
-            <a href="<?= htmlspecialchars($companyContact['phone_href'], ENT_QUOTES, 'UTF-8') ?>" class="text-decoration-none">
-              <span><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?></span>
+            <a href="tel:<?= e($companyInfo['company_number'] ?? '+1 (844) EASY-WEB') ?>" class="text-decoration-none">
+              <span><?= e($companyInfo['company_number'] ?? '+1 (844) EASY-WEB') ?></span>
             </a>
           </div>
         </div>

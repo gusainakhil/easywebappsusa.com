@@ -31,25 +31,31 @@ function dbLite(): PDO
     return $pdo;
 }
 
-function e(string $value): string
-{
-    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+if (!function_exists('e')) {
+    function e(string $value): string
+    {
+        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+    }
 }
 
-function adminLiteTables(): array
-{
-    return [
-        'blogs' => 'Blogs',
-        'quotes' => 'Quotes',
-        'contact_form' => 'Contact Form',
-        'company_detail' => 'Company Detail',
-        'job_applications' => 'Job Applications',
-        'locations' => 'Locations',
-        'locations_application' => 'Locations Application',
-    ];
+if (!function_exists('adminLiteTables')) {
+    function adminLiteTables(): array
+    {
+        return [
+            'blogs' => 'Blogs',
+            'quotes' => 'Quotes',
+            'contact_form' => 'Contact Form',
+            'company_detail' => 'Company Detail',
+            'job_applications' => 'Job Applications',
+            'locations' => 'Locations',
+            'locations_application' => 'Locations Application',
+        ];
+    }
 }
 
-function quoteIdentLite(string $name): string
-{
-    return '`' . str_replace('`', '``', $name) . '`';
+if (!function_exists('quoteIdentLite')) {
+    function quoteIdentLite(string $name): string
+    {
+        return '`' . str_replace('`', '``', $name) . '`';
+    }
 }

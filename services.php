@@ -1,8 +1,7 @@
 <?php
-require_once __DIR__ . '/company-contact.php';
-$companyContact = ewaGetCompanyContact();
+require __DIR__ . '/config.php';
+$companyInfo = getCompanyInfo();
 ?>
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -56,7 +55,7 @@ $companyContact = ewaGetCompanyContact();
               <nav aria-label="breadcrumb">
                 <ol class="breadcrumb justify-content-center">
                   <li class="breadcrumb-item">
-                    <a href="index.html">Home</a>
+                    <a href="index.php">Home</a>
                   </li>
                   <li class="breadcrumb-item active" aria-current="page">
                     Services
@@ -395,10 +394,10 @@ $companyContact = ewaGetCompanyContact();
                 Let's discuss how we can help your business through technology
               </p>
               <div class="cta-buttons">
-                <a href="index.html" class="cta-btn cta-btn-primary">
+                <a href="index.php" class="cta-btn cta-btn-primary">
                   <i class="fas fa-envelope me-2"></i>Get Free Quote
                 </a>
-                <a href="<?= htmlspecialchars($companyContact['phone_href'], ENT_QUOTES, 'UTF-8') ?>" class="cta-btn cta-btn-secondary">
+                <a href="tel:+18443299832" class="cta-btn cta-btn-secondary">
                   <i class="fas fa-phone me-2"></i>Call Now
                 </a>
               </div>
@@ -425,22 +424,22 @@ $companyContact = ewaGetCompanyContact();
           if (
             href &&
             (href === currentPage ||
-              (currentPage === "" && href === "index.html") ||
-              (!currentPage && href === "index.html"))
+              (currentPage === "" && href === "index.php") ||
+              (!currentPage && href === "index.php"))
           ) {
             link.classList.add("active");
           }
         });
       }
 
-      fetch("navbar.html")
+      fetch("navbar.php")
         .then((r) => r.text())
         .then((html) => {
           document.getElementById("navbar-container").innerHTML = html;
           setActiveNavLink();
         });
 
-      fetch("footer.html")
+      fetch("footer.php")
         .then((r) => r.text())
         .then((html) => {
           document.getElementById("footer-container").innerHTML = html;

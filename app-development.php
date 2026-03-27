@@ -1,8 +1,7 @@
 <?php
-require_once __DIR__ . '/company-contact.php';
-$companyContact = ewaGetCompanyContact();
+require __DIR__ . '/config.php';
+$companyInfo = getCompanyInfo();
 ?>
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -320,8 +319,8 @@ $companyContact = ewaGetCompanyContact();
   </head>
 
   <body>
-    <?php include "nabar.php"; ?>
-    <script src="js/navigation.js"></script>
+    <?php include "navbar.php"; ?>
+    <!-- <script src="js/navigation.js"></script> -->
 
     <!-- Hero Section -->
     <section class="service-hero" id="app-hero">
@@ -362,7 +361,10 @@ $companyContact = ewaGetCompanyContact();
                 >
                   Get a Free Quote
                 </h4>
-                <form id="heroQuoteForm" class="hero-quote-form">
+                <form id="heroQuoteForm" class="hero-quote-form" action="form-submit.php" method="post">
+                  <input type="hidden" name="redirect" value="app-development.php" />
+                  <input type="hidden" name="source_page" value="app-development" />
+                  <input type="hidden" name="form_type" value="hero_quote" />
                   <div class="mb-2">
                     <input
                       type="text"
@@ -1108,7 +1110,7 @@ $companyContact = ewaGetCompanyContact();
           team. Whether you need iOS, Android, or cross-platform solutions, we
           deliver high-quality apps that engage users and drive business growth.
         </p>
-        <a href="<?= htmlspecialchars($companyContact['phone_href'], ENT_QUOTES, 'UTF-8') ?>" class="btn btn-warning btn-lg me-3">
+        <a href="tel:+18443299832" class="btn btn-warning btn-lg me-3">
           <i class="fas fa-phone-alt me-2"></i>Call Us Now
         </a>
         <a href="#app-hero" class="btn btn-outline-light btn-lg">
@@ -1197,36 +1199,25 @@ $companyContact = ewaGetCompanyContact();
           observer.observe(el);
         });
 
-      // Form submission handler - static data
-      document
-        .getElementById("heroQuoteForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          const submitBtn = this.querySelector('button[type="submit"]');
-          const originalText = submitBtn.innerHTML;
-          submitBtn.innerHTML =
-            '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
-          submitBtn.disabled = true;
-
-          // Simulate brief processing time
-          setTimeout(() => {
-            const formResult = document.getElementById("heroFormResult");
-            formResult.className = "mt-2 alert alert-success";
-            formResult.innerHTML =
-              '<i class="fas fa-check-circle me-2"></i>Thank you! Your app development quote request has been received. We will contact you soon.';
-            formResult.classList.remove("d-none");
-
-            this.reset();
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-
-            // Hide message after 6 seconds
-            setTimeout(() => {
-              formResult.classList.add("d-none");
-            }, 6000);
-          }, 800);
-        });
+      // Submission status alert after redirect
+      const pageQuery = new URLSearchParams(window.location.search);
+      if (pageQuery.get("form") === "success") {
+        const formResult = document.getElementById("heroFormResult");
+        if (formResult) {
+          formResult.className = "mt-2 alert alert-success";
+          formResult.innerHTML =
+            '<i class="fas fa-check-circle me-2"></i>Thank you! Your request has been submitted.';
+          formResult.classList.remove("d-none");
+        }
+      } else if (pageQuery.get("form") === "error") {
+        const formResult = document.getElementById("heroFormResult");
+        if (formResult) {
+          formResult.className = "mt-2 alert alert-danger";
+          formResult.innerHTML =
+            '<i class="fas fa-exclamation-circle me-2"></i>Submission failed. Please try again.';
+          formResult.classList.remove("d-none");
+        }
+      }
     </script>
   </body>
 </html>

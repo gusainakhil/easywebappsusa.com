@@ -1,3 +1,7 @@
+<?php
+require __DIR__ . '/config.php';
+$companyInfo = getCompanyInfo();
+?>
 <!doctype html>
 <html lang="en">
   <head>

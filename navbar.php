@@ -1,3 +1,6 @@
+<?php
+require __DIR__ . '/config.php';
+?>
 <nav
   id="navbar"
   class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top"

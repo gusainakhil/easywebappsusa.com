@@ -1,8 +1,7 @@
 <?php
-require_once __DIR__ . '/company-contact.php';
-$companyContact = ewaGetCompanyContact();
+require __DIR__ . '/config.php';
+$companyInfo = getCompanyInfo();
 ?>
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -120,10 +119,10 @@ $companyContact = ewaGetCompanyContact();
                 </p>
                 <p>
                   Email:
-                  <a href="<?= htmlspecialchars($companyContact['email_href'], ENT_QUOTES, 'UTF-8') ?>"
-                    ><?= htmlspecialchars($companyContact['email_display'], ENT_QUOTES, 'UTF-8') ?></a
+                  <a href="mailto:<?= e($companyInfo['company_email'] ?? 'info@everythingeasy.com') ?>"
+                    ><?= e($companyInfo['company_email'] ?? 'info@everythingeasy.com') ?></a
                   ><br />
-                  Phone: <a href="<?= htmlspecialchars($companyContact['phone_href'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?></a>
+                  Phone: <a href="tel:<?= e($companyInfo['company_number'] ?? '+1 (844) EASY-WEB') ?>"><?= e($companyInfo['company_number'] ?? '+1 (844) EASY-WEB') ?></a>
                 </p>
               </div>
             </div>

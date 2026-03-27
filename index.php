@@ -1,8 +1,7 @@
 <?php
-require_once __DIR__ . '/company-contact.php';
-$companyContact = ewaGetCompanyContact();
+require __DIR__ . '/config.php';
+$companyInfo = getCompanyInfo();
 ?>
-
 <!doctype html>
 <html lang="en">
 
@@ -52,11 +51,11 @@ $companyContact = ewaGetCompanyContact();
         "@type": "LocalBusiness",
         "name": "EverythingEasy Technology USA",
         "url": "https://everythingeasy-usa.com",
-        "telephone": <?= json_encode($companyContact['phone_display']) ?>,
+        "telephone": "<?= json_encode($companyInfo['company_number']) ?>",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": <?= json_encode($companyContact['address_line_1']) ?>,
-          "addressLocality": <?= json_encode($companyContact['address_line_2']) ?>,
+          "streetAddress": "123 Tech Boulevard",
+          "addressLocality": "New York",
           "addressRegion": "NY",
           "postalCode": "10001",
           "addressCountry": "US"
@@ -334,11 +333,14 @@ $companyContact = ewaGetCompanyContact();
           <div class="col-lg-6">
             <div class="consultation-form">
               <h3>Free Consultation</h3>
-              <form id="heroQuoteForm">
-                <input type="text" placeholder="Full Name" class="form-control mb-3" required />
-                <input type="email" placeholder="Email Address" class="form-control mb-3" required />
-                <input type="tel" placeholder="Phone Number" class="form-control mb-3" />
-                <select class="form-select mb-3" required>
+              <form id="heroQuoteForm" action="form-submit.php" method="post">
+                <input type="hidden" name="redirect" value="index.php" />
+                <input type="hidden" name="source_page" value="index" />
+                <input type="hidden" name="form_type" value="hero_quote" />
+                <input type="text" name="name" placeholder="Full Name" class="form-control mb-3" required />
+                <input type="email" name="email" placeholder="Email Address" class="form-control mb-3" required />
+                <input type="tel" name="phone" placeholder="Phone Number" class="form-control mb-3" required />
+                <select class="form-select mb-3" name="service">
                   <option value="">Select Service</option>
                   <option value="web">Website Development</option>
                   <option value="app">Mobile App</option>
@@ -1394,10 +1396,10 @@ $companyContact = ewaGetCompanyContact();
               solution that exceeds your expectations.
             </p>
             <p style="font-size: 16px; margin-bottom: 20px">
-              <i class="fas fa-phone-alt" style="margin-right: 12px"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
+              <i class="fas fa-phone-alt" style="margin-right: 12px"></i><?= e($companyInfo['company_number']) ?>
             </p>
             <p style="font-size: 16px">
-              <i class="fas fa-envelope" style="margin-right: 12px"></i><?= htmlspecialchars($companyContact['email_display'], ENT_QUOTES, 'UTF-8') ?>
+              <i class="fas fa-envelope" style="margin-right: 12px"></i><?= e($companyInfo['company_email']) ?>
             </p>
           </div>
           <div class="col-lg-6">
@@ -1410,14 +1412,17 @@ $companyContact = ewaGetCompanyContact();
               <h3 style="font-weight: 700; margin-bottom: 25px">
                 Request a Quote
               </h3>
-              <form id="bottomQuoteForm">
-                <input type="text" placeholder="Project Name" class="form-control mb-3" required
+              <form id="bottomQuoteForm" action="form-submit.php" method="post">
+                <input type="hidden" name="redirect" value="index.php" />
+                <input type="hidden" name="source_page" value="index" />
+                <input type="hidden" name="form_type" value="bottom_quote" />
+                <input type="text" name="name" placeholder="Your Name" class="form-control mb-3" required
                   style="border: 2px solid #e0e0e0; padding: 12px" />
-                <input type="email" placeholder="Your Email" class="form-control mb-3" required
+                <input type="email" name="email" placeholder="Your Email" class="form-control mb-3" required
                   style="border: 2px solid #e0e0e0; padding: 12px" />
-                <input type="tel" placeholder="Phone Number" class="form-control mb-3"
+                <input type="tel" name="phone" placeholder="Phone Number" class="form-control mb-3" required
                   style="border: 2px solid #e0e0e0; padding: 12px" />
-                <textarea placeholder="Project Details" rows="4" class="form-control mb-3"
+                <textarea name="message" placeholder="Project Details" rows="4" class="form-control mb-3"
                   style="border: 2px solid #e0e0e0; padding: 12px"></textarea>
                 <button type="submit" class="btn btn-primary w-100" style="padding: 12px; font-weight: 600">
                   Send Request
@@ -1464,7 +1469,7 @@ $companyContact = ewaGetCompanyContact();
               <h5 style="font-weight: 700; color: #333; margin-bottom: 10px">
                 Phone
               </h5>
-              <p style="color: #666"><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?></p>
+              <p style="color: #666"><?= e($companyInfo['company_number']) ?></p>
               <p style="color: #999; font-size: 13px">
                 Mon-Fri, 9 AM - 6 PM EST
               </p>
@@ -1487,7 +1492,7 @@ $companyContact = ewaGetCompanyContact();
               <h5 style="font-weight: 700; color: #333; margin-bottom: 10px">
                 Email
               </h5>
-              <p style="color: #666"><?= htmlspecialchars($companyContact['email_display'], ENT_QUOTES, 'UTF-8') ?></p>
+              <p style="color: #666"><?= e($companyInfo['company_email']) ?></p>
               <p style="color: #999; font-size: 13px">
                 We respond within 2 hours
               </p>
@@ -1510,8 +1515,7 @@ $companyContact = ewaGetCompanyContact();
               <h5 style="font-weight: 700; color: #333; margin-bottom: 10px">
                 Office
               </h5>
-              <p style="color: #666"><?= htmlspecialchars($companyContact['address_line_1'], ENT_QUOTES, 'UTF-8') ?></p>
-              <p style="color: #666"><?= htmlspecialchars($companyContact['address_line_2'], ENT_QUOTES, 'UTF-8') ?></p>
+              <p style="color: #666"><?= e($companyInfo['company_address']) ?></p>
             </div>
           </div>
         </div>
@@ -1570,22 +1574,13 @@ $companyContact = ewaGetCompanyContact();
       });
     });
 
-    // Form submission
-    document
-      .getElementById("heroQuoteForm")
-      ?.addEventListener("submit", function (e) {
-        e.preventDefault();
-        alert("Thank you for your inquiry! We will contact you soon.");
-        this.reset();
-      });
-
-    document
-      .getElementById("bottomQuoteForm")
-      ?.addEventListener("submit", function (e) {
-        e.preventDefault();
-        alert("Thank you for your inquiry! We will contact you soon.");
-        this.reset();
-      });
+    // Submission status alert after redirect
+    const pageQuery = new URLSearchParams(window.location.search);
+    if (pageQuery.get("form") === "success") {
+      alert("Thank you! Your request has been submitted.");
+    } else if (pageQuery.get("form") === "error") {
+      alert("Submission failed. Please try again.");
+    }
 
     // Navbar scroll effect
     window.addEventListener("scroll", function () {

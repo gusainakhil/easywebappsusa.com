@@ -1,3 +1,19 @@
+<?php
+require __DIR__ . '/config.php';
+$companyInfo = getCompanyInfo();
+$careerFormStatus = null;
+$careerFormRef = null;
+
+if (isset($_SESSION['career_form_status']) && is_string($_SESSION['career_form_status'])) {
+  $careerFormStatus = $_SESSION['career_form_status'];
+  unset($_SESSION['career_form_status']);
+}
+
+if (isset($_SESSION['career_form_ref']) && is_string($_SESSION['career_form_ref'])) {
+  $careerFormRef = $_SESSION['career_form_ref'];
+  unset($_SESSION['career_form_ref']);
+}
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -178,6 +194,7 @@
                     <br />
                     <button
                       class="btn btn-primary btn-sm mt-3"
+                      data-position="Senior Web Developer"
                       data-bs-toggle="modal"
                       data-bs-target="#applyModal"
                     >
@@ -213,6 +230,7 @@
                     <br />
                     <button
                       class="btn btn-primary btn-sm mt-3"
+                      data-position="Mobile App Developer"
                       data-bs-toggle="modal"
                       data-bs-target="#applyModal"
                     >
@@ -248,6 +266,7 @@
                     <br />
                     <button
                       class="btn btn-primary btn-sm mt-3"
+                      data-position="UI/UX Designer"
                       data-bs-toggle="modal"
                       data-bs-target="#applyModal"
                     >
@@ -285,6 +304,7 @@
                     <br />
                     <button
                       class="btn btn-primary btn-sm mt-3"
+                      data-position="Digital Marketing Specialist"
                       data-bs-toggle="modal"
                       data-bs-target="#applyModal"
                     >
@@ -330,7 +350,8 @@
               ></button>
             </div>
             <div class="modal-body">
-              <form id="applicationForm">
+              <form id="applicationForm" action="career-submit.php" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="position" id="selectedPosition" value="General Application" />
                 <div class="mb-3">
                   <label for="applicantName" class="form-label"
                     >Full Name</label
@@ -339,6 +360,7 @@
                     type="text"
                     class="form-control"
                     id="applicantName"
+                    name="full_name"
                     required
                   />
                 </div>
@@ -348,6 +370,7 @@
                     type="email"
                     class="form-control"
                     id="applicantEmail"
+                    name="email"
                     required
                   />
                 </div>
@@ -359,7 +382,34 @@
                     type="tel"
                     class="form-control"
                     id="applicantPhone"
+                    name="phone"
                     required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="applicantExperience" class="form-label"
+                    >Years of Experience</label
+                  >
+                  <input
+                    type="number"
+                    min="0"
+                    class="form-control"
+                    id="applicantExperience"
+                    name="experience"
+                    value="0"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="applicantPortfolio" class="form-label"
+                    >Portfolio URL (Optional)</label
+                  >
+                  <input
+                    type="url"
+                    class="form-control"
+                    id="applicantPortfolio"
+                    name="portfolio"
+                    placeholder="https://portfolio.example.com"
                   />
                 </div>
                 <div class="mb-3">
@@ -370,6 +420,7 @@
                     type="file"
                     class="form-control"
                     id="applicantResume"
+                    name="resume"
                     accept=".pdf"
                     required
                   />
@@ -381,6 +432,7 @@
                   <textarea
                     class="form-control"
                     id="applicantMessage"
+                    name="cover_letter"
                     rows="4"
                   ></textarea>
                 </div>
@@ -431,18 +483,25 @@
           document.getElementById("footer-container").innerHTML = html;
         });
 
-      document
-        .getElementById("applicationForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          alert(
-            "Thank you for your application! We will review your resume and contact you soon.",
-          );
-          this.reset();
-          bootstrap.Modal.getInstance(
-            document.getElementById("applyModal"),
-          ).hide();
+      const careerFormStatus = <?= json_encode($careerFormStatus) ?>;
+      const careerFormRef = <?= json_encode($careerFormRef) ?>;
+      if (careerFormStatus === "success") {
+        alert(
+          "Application submitted successfully." +
+            (careerFormRef ? " Reference: " + careerFormRef : ""),
+        );
+      } else if (careerFormStatus === "error") {
+        alert("Application submission failed. Please try again.");
+      }
+
+      document.querySelectorAll('[data-bs-target="#applyModal"]').forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const selectedPosition = document.getElementById("selectedPosition");
+          if (selectedPosition) {
+            selectedPosition.value = this.getAttribute("data-position") || "General Application";
+          }
         });
+      });
     </script>
   </body>
 </html>

@@ -1,8 +1,7 @@
 <?php
-require_once __DIR__ . '/company-contact.php';
-$companyContact = ewaGetCompanyContact();
+require __DIR__ . '/config.php';
+$companyInfo = getCompanyInfo();
 ?>
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -77,7 +76,7 @@ $companyContact = ewaGetCompanyContact();
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb justify-content-center bg-transparent">
                 <li class="breadcrumb-item">
-                  <a href="index.html" class="text-warning">Home</a>
+                  <a href="index.php" class="text-warning">Home</a>
                 </li>
                 <li
                   class="breadcrumb-item active text-white"
@@ -119,7 +118,7 @@ $companyContact = ewaGetCompanyContact();
             <div
               class="location-card"
               style="cursor: pointer"
-              onclick="window.location.href = 'web-development.html'"
+              onclick="window.location.href = 'web-development.php'"
             >
               <div class="location-icon">
                 <i class="fas fa-map-pin"></i>
@@ -130,7 +129,7 @@ $companyContact = ewaGetCompanyContact();
                 mobile apps, and digital marketing solutions.
               </p>
               <small class="text-muted">
-                <i class="fas fa-phone me-2"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
+                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
               </small>
             </div>
           </div>
@@ -140,7 +139,7 @@ $companyContact = ewaGetCompanyContact();
             <div
               class="location-card"
               style="cursor: pointer"
-              onclick="window.location.href = 'app-development.html'"
+              onclick="window.location.href = 'app-development.php'"
             >
               <div class="location-icon">
                 <i class="fas fa-map-pin"></i>
@@ -151,7 +150,7 @@ $companyContact = ewaGetCompanyContact();
                 innovative technology solutions and consulting.
               </p>
               <small class="text-muted">
-                <i class="fas fa-phone me-2"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
+                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
               </small>
             </div>
           </div>
@@ -161,7 +160,7 @@ $companyContact = ewaGetCompanyContact();
             <div
               class="location-card"
               style="cursor: pointer"
-              onclick="window.location.href = 'web-development.html'"
+              onclick="window.location.href = 'web-development.php'"
             >
               <div class="location-icon">
                 <i class="fas fa-map-pin"></i>
@@ -172,7 +171,7 @@ $companyContact = ewaGetCompanyContact();
                 throughout Texas and the Southwest region.
               </p>
               <small class="text-muted">
-                <i class="fas fa-phone me-2"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
+                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
               </small>
             </div>
           </div>
@@ -182,7 +181,7 @@ $companyContact = ewaGetCompanyContact();
             <div
               class="location-card"
               style="cursor: pointer"
-              onclick="window.location.href = 'web-development.html'"
+              onclick="window.location.href = 'web-development.php'"
             >
               <div class="location-icon">
                 <i class="fas fa-map-pin"></i>
@@ -193,7 +192,7 @@ $companyContact = ewaGetCompanyContact();
                 Miami, Orlando, Tampa, and across Florida.
               </p>
               <small class="text-muted">
-                <i class="fas fa-phone me-2"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
+                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
               </small>
             </div>
           </div>
@@ -203,7 +202,7 @@ $companyContact = ewaGetCompanyContact();
             <div
               class="location-card"
               style="cursor: pointer"
-              onclick="window.location.href = 'web-development.html'"
+              onclick="window.location.href = 'web-development.php'"
             >
               <div class="location-icon">
                 <i class="fas fa-map-pin"></i>
@@ -214,7 +213,7 @@ $companyContact = ewaGetCompanyContact();
                 cloud services, and digital marketing.
               </p>
               <small class="text-muted">
-                <i class="fas fa-phone me-2"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
+                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
               </small>
             </div>
           </div>
@@ -224,7 +223,7 @@ $companyContact = ewaGetCompanyContact();
             <div
               class="location-card"
               style="cursor: pointer"
-              onclick="window.location.href = 'web-development.html'"
+              onclick="window.location.href = 'web-development.php'"
             >
               <div class="location-icon">
                 <i class="fas fa-map-pin"></i>
@@ -235,7 +234,7 @@ $companyContact = ewaGetCompanyContact();
                 tech-forward solutions and consulting services.
               </p>
               <small class="text-muted">
-                <i class="fas fa-phone me-2"></i><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?>
+                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
               </small>
             </div>
           </div>
@@ -439,10 +438,10 @@ $companyContact = ewaGetCompanyContact();
               help your business grow.
             </p>
             <div class="d-flex flex-wrap justify-content-center gap-3">
-              <a href="contact.html" class="btn btn-warning btn-lg">
+              <a href="contact.php" class="btn btn-warning btn-lg">
                 <i class="fas fa-envelope me-2"></i>Contact Us
               </a>
-              <a href="<?= htmlspecialchars($companyContact['phone_href'], ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-light btn-lg">
+              <a href="tel:+18443299832" class="btn btn-outline-light btn-lg">
                 <i class="fas fa-phone me-2"></i>Call Now
               </a>
             </div>
@@ -468,22 +467,22 @@ $companyContact = ewaGetCompanyContact();
           if (
             href &&
             (href === currentPage ||
-              (currentPage === "" && href === "index.html") ||
-              (!currentPage && href === "index.html"))
+              (currentPage === "" && href === "index.php") ||
+              (!currentPage && href === "index.php"))
           ) {
             link.classList.add("active");
           }
         });
       }
 
-      fetch("navbar.html")
+      fetch("navbar.php")
         .then((r) => r.text())
         .then((html) => {
           document.getElementById("navbar-container").innerHTML = html;
           setActiveNavLink();
         });
 
-      fetch("footer.html")
+      fetch("footer.php")
         .then((r) => r.text())
         .then((html) => {
           document.getElementById("footer-container").innerHTML = html;

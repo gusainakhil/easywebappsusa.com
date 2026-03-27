@@ -1,8 +1,17 @@
 <?php
-require_once __DIR__ . '/company-contact.php';
-$companyContact = ewaGetCompanyContact();
+require __DIR__ . '/config.php';
+$companyInfo = getCompanyInfo();
+$contactFormStatus = null;
+ $contactFormRef = null;
+if (isset($_SESSION['contact_form_status']) && is_string($_SESSION['contact_form_status'])) {
+  $contactFormStatus = $_SESSION['contact_form_status'];
+  unset($_SESSION['contact_form_status']);
+}
+if (isset($_SESSION['contact_form_ref']) && is_string($_SESSION['contact_form_ref'])) {
+  $contactFormRef = $_SESSION['contact_form_ref'];
+  unset($_SESSION['contact_form_ref']);
+}
 ?>
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -113,7 +122,7 @@ $companyContact = ewaGetCompanyContact();
               <div class="contact-info-box">
                 <i class="fas fa-phone"></i>
                 <h5 class="fw-bold mb-2">Phone</h5>
-                <p class="mb-0"><?= htmlspecialchars($companyContact['phone_display'], ENT_QUOTES, 'UTF-8') ?></p>
+                <p class="mb-0"><a href="tel:<?= e($companyInfo['company_number'] ?? '+1 (844) EASY-WEB') ?>" class="text-decoration-none text-dark"><?= e($companyInfo['company_number'] ?? '+1 (844) EASY-WEB') ?></a></p>
                 <p class="text-muted small">Mon-Fri, 9AM-6PM EST</p>
               </div>
             </div>
@@ -121,7 +130,7 @@ $companyContact = ewaGetCompanyContact();
               <div class="contact-info-box">
                 <i class="fas fa-envelope"></i>
                 <h5 class="fw-bold mb-2">Email</h5>
-                <p class="mb-0"><?= htmlspecialchars($companyContact['email_display'], ENT_QUOTES, 'UTF-8') ?></p>
+                <p class="mb-0"><a href="mailto:<?= e($companyInfo['company_email'] ?? 'info@everythingeasy.com') ?>" class="text-decoration-none text-dark"><?= e($companyInfo['company_email'] ?? 'info@everythingeasy.com') ?></a></p>
                 <p class="text-muted small">We'll respond within 24 hours</p>
               </div>
             </div>
@@ -129,8 +138,8 @@ $companyContact = ewaGetCompanyContact();
               <div class="contact-info-box">
                 <i class="fas fa-map-marker-alt"></i>
                 <h5 class="fw-bold mb-2">Address</h5>
-                <p class="mb-0"><?= htmlspecialchars($companyContact['address_line_1'], ENT_QUOTES, 'UTF-8') ?></p>
-                <p class="text-muted small"><?= htmlspecialchars($companyContact['address_line_2'], ENT_QUOTES, 'UTF-8') ?></p>
+                <p class="mb-0"><?= e($companyInfo['company_address'] ?? '123 Tech Boulevard') ?></p>
+                <p class="text-muted small">USA</p>
               </div>
             </div>
           </div>
@@ -150,7 +159,10 @@ $companyContact = ewaGetCompanyContact();
               "
             >
               <h2 class="fw-bold text-center mb-5">Send us a Message</h2>
-              <form id="contactForm" class="needs-validation">
+              <form id="contactForm" class="needs-validation" action="form-submit.php" method="post">
+                <input type="hidden" name="redirect" value="contact.php" />
+                <input type="hidden" name="source_page" value="contact" />
+                <input type="hidden" name="form_type" value="contact_form" />
                 <div class="row mb-4">
                   <div class="col-md-6 mb-3">
                     <label for="fullName" class="form-label fw-bold"
@@ -160,6 +172,7 @@ $companyContact = ewaGetCompanyContact();
                       type="text"
                       class="form-control form-control-lg"
                       id="fullName"
+                      name="name"
                       placeholder="Your name"
                       required
                     />
@@ -175,6 +188,7 @@ $companyContact = ewaGetCompanyContact();
                       type="email"
                       class="form-control form-control-lg"
                       id="email"
+                      name="email"
                       placeholder="your@email.com"
                       required
                     />
@@ -193,7 +207,9 @@ $companyContact = ewaGetCompanyContact();
                       type="tel"
                       class="form-control form-control-lg"
                       id="phone"
+                      name="phone"
                       placeholder="(123) 456-7890"
+                      required
                     />
                   </div>
                   <div class="col-md-6 mb-3">
@@ -203,15 +219,16 @@ $companyContact = ewaGetCompanyContact();
                     <select
                       class="form-select form-select-lg"
                       id="subject"
+                      name="service"
                       required
                     >
-                      <option selected>Choose a subject...</option>
-                      <option>Web Development</option>
-                      <option>Mobile App Development</option>
-                      <option>Digital Marketing</option>
-                      <option>E-Commerce Solutions</option>
-                      <option>IT Consulting</option>
-                      <option>Other</option>
+                      <option value="" selected>Choose a subject...</option>
+                      <option value="Web Development">Web Development</option>
+                      <option value="Mobile App Development">Mobile App Development</option>
+                      <option value="Digital Marketing">Digital Marketing</option>
+                      <option value="E-Commerce Solutions">E-Commerce Solutions</option>
+                      <option value="IT Consulting">IT Consulting</option>
+                      <option value="Other">Other</option>
                     </select>
                     <div class="invalid-feedback">Please select a subject.</div>
                   </div>
@@ -224,6 +241,7 @@ $companyContact = ewaGetCompanyContact();
                   <textarea
                     class="form-control form-control-lg"
                     id="message"
+                    name="message"
                     rows="5"
                     placeholder="Tell us about your project..."
                     required
@@ -409,7 +427,7 @@ $companyContact = ewaGetCompanyContact();
               </p>
             </div>
             <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-              <a href="<?= htmlspecialchars($companyContact['phone_href'], ENT_QUOTES, 'UTF-8') ?>" class="btn btn-warning btn-lg">
+              <a href="tel:+18443299832" class="btn btn-warning btn-lg">
                 <i class="fas fa-phone me-2"></i>Call Now
               </a>
             </div>
@@ -456,29 +474,21 @@ $companyContact = ewaGetCompanyContact();
           document.getElementById("footer-container").innerHTML = html;
         });
 
-      document
-        .getElementById("contactForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          if (!this.checkValidity()) {
-            e.stopPropagation();
-            this.classList.add("was-validated");
-          } else {
-            const formResult = document.getElementById("formResult");
-            formResult.className = "alert alert-success";
-            formResult.innerHTML =
-              '<i class="fas fa-check-circle me-2"></i>Thank you! We\'ve received your message and will get back to you shortly.';
-            formResult.classList.remove("d-none");
-
-            this.reset();
-            this.classList.remove("was-validated");
-
-            setTimeout(() => {
-              formResult.classList.add("d-none");
-            }, 5000);
-          }
-        });
+      const formResult = document.getElementById("formResult");
+      const contactFormStatus = <?= json_encode($contactFormStatus) ?>;
+      const contactFormRef = <?= json_encode($contactFormRef) ?>;
+      if (contactFormStatus === "success" && formResult) {
+        formResult.className = "alert alert-success";
+        formResult.innerHTML =
+          '<i class="fas fa-check-circle me-2"></i>Thank you! We\'ve received your message and will get back to you shortly.' +
+          (contactFormRef ? ('<br><small>Reference: ' + contactFormRef + '</small>') : '');
+        formResult.classList.remove("d-none");
+      } else if (contactFormStatus === "error" && formResult) {
+        formResult.className = "alert alert-danger";
+        formResult.innerHTML =
+          '<i class="fas fa-exclamation-circle me-2"></i>Submission failed. Please try again.';
+        formResult.classList.remove("d-none");
+      }
     </script>
   
   </body>

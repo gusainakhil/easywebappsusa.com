@@ -1,0 +1,6 @@
+[2026-03-27 14:04:21] SUCCESS: Lead email sent to admin info@everythingeasy.in for Quote ID: 999001
+[2026-03-27 14:04:21] SUCCESS: Lead email sent to admin akhilgusain65@gmail.com for Quote ID: 999001
+[2026-03-27 14:04:21] SUCCESS: Lead email sent to admin akhilgusain2@gmail.com for Quote ID: 999001
+[2026-03-27 14:04:21] SUCCESS: Lead email sent to admin sarthakbhatt1407@gmail.com for Quote ID: 999001
+[2026-03-27 14:04:21] SMTP not configured for customer thank-you, using mail() fallback for: test.user@example.com
+[2026-03-27 14:04:21] SUCCESS: Thank-you email sent to test.user@example.com for Quote ID: 999001
