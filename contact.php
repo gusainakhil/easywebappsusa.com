@@ -61,8 +61,8 @@
   </head>
 
   <body>
-    <div id="navbar-container"></div>
-    <script src="js/navigation.js"></script>
+    <?php include "navbar.php"; ?>
+    <!-- <script src="js/navigation.js"></script> -->
     <main style="margin-top: 30px">
       <!-- Hero Section -->
       <section class="page-header">
@@ -414,6 +414,7 @@
 
      <?php include "footer.php"; ?>
     </main>
+      
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
       function setActiveNavLink() {
@@ -474,5 +475,6 @@
           }
         });
     </script>
+  
   </body>
 </html>

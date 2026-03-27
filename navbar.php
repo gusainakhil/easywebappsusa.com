@@ -6,7 +6,7 @@
   <div class="container">
     <a
       class="navbar-brand fw-bold text-primary d-flex align-items-center"
-      href="index.html"
+      href="index.php"
     >
       <img
         src="./images/logo.webp"
@@ -26,25 +26,25 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" href="index.html">Home</a>
+          <a class="nav-link" href="index.php">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="about.html">About</a>
+          <a class="nav-link" href="about.php">About</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="services.html">Services</a>
+          <a class="nav-link" href="services.php">Services</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="blog.html">Blog</a>
+          <a class="nav-link" href="blog.php">Blog</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="career.html">Careers</a>
+          <a class="nav-link" href="career.php">Careers</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="contact.html">Contact</a>
+          <a class="nav-link" href="contact.php">Contact</a>
         </li>
         <li class="nav-item">
-          <a class="btn btn-primary btn-sm ms-3" href="index.html">Get Quote</a>
+          <a class="btn btn-primary btn-sm ms-3" href="index.php">Get Quote</a>
         </li>
       </ul>
     </div>

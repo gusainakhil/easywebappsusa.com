@@ -71,8 +71,8 @@
   </head>
 
   <body>
-    <?php include "nabar.php"; ?>
-    <script src="js/navigation.js"></script>
+    <?php include "navbar.php"; ?>
+    <!-- <script src="js/navigation.js"></script> -->
     <main style="margin-top: 35px">
       <!-- Blog Header -->
       <section

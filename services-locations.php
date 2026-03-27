@@ -54,8 +54,8 @@
   </head>
 
   <body>
-    <?php include "nabar.php"; ?>
-    <script src="js/navigation.js"></script>
+    <?php include "navbar.php"; ?>
+    <!-- <script src="js/navigation.js"></script> -->
     <!-- Page Header -->
     <section
       class="py-5 bg-gradient-primary text-white"

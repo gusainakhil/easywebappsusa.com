@@ -64,7 +64,7 @@
   </head>
 
   <body>
-    <?php include "nabar.php"; ?>
+    <?php include "navbar.php"; ?>
     <script src="js/navigation.js"></script>
     <main style="margin-top: 30px">
       <!-- Page Header -->

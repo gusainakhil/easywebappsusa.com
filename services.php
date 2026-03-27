@@ -35,8 +35,8 @@
   </head>
 
   <body>
-    <?php include "nabar.php"; ?>
-    <script src="js/navigation.js"></script>
+    <?php include "navbar.php"; ?>
+    <!-- <script src="js/navigation.js"></script> -->
     <main style="margin-top: 30px">
       <!-- Page Header -->
       <section class="page-header">

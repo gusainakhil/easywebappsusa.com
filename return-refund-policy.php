@@ -20,8 +20,8 @@
   </head>
   <body>
     <!-- Navbar Container -->
-    <?php include "nabar.php"; ?>
-    <script src="js/navigation.js"></script>
+    <?php include "navbar.php"; ?>
+    <!-- <script src="js/navigation.js"></script> -->
 
     <main style="margin-top: 70px">
       <!-- Page Header -->
