@@ -287,7 +287,7 @@
 
   <body>
     <!-- Navbar Container -->
-    <div id="navbar-container"></div>
+    <?php include "header.php"; ?>
     <script src="js/navigation.js"></script>
     <main style="margin-top: 70px">
       <!-- Hero Section -->
