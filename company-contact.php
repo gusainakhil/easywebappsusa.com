@@ -12,7 +12,7 @@ function ewaGetCompanyContact(): array
     }
 
     $fallback = [
-        'phone_display' => '+1 (844) 00000',
+        'company_number' => '+1 (844) 00000',
         'email_display' => 'info@everythingeasy.com',
         'address_line_1' => '123 Tech Boulevard',
         'address_line_2' => 'New York, NY 10001, USA',
@@ -81,7 +81,7 @@ function ewaGetCompanyContact(): array
         $addressLine2 = implode(', ', $parts);
     }
 
-    $phoneDisplay = $phoneDisplay !== '' ? $phoneDisplay : $fallback['phone_display'];
+    $phoneDisplay = $phoneDisplay !== '' ? $phoneDisplay : $fallback['company_number'];
     $emailDisplay = $emailDisplay !== '' ? $emailDisplay : $fallback['email_display'];
     $addressLine1 = $addressLine1 !== '' ? $addressLine1 : $fallback['address_line_1'];
     $addressLine2 = $addressLine2 !== '' ? $addressLine2 : $fallback['address_line_2'];
@@ -94,7 +94,7 @@ function ewaGetCompanyContact(): array
     $addressDisplay = trim($addressLine1 . ', ' . $addressLine2, ', ');
 
     $contact = [
-        'phone_display' => $phoneDisplay,
+        'company_number' => $phoneDisplay,
         'phone_href' => $phoneHref,
         'email_display' => $emailDisplay,
         'email_href' => 'mailto:' . $emailDisplay,
