@@ -744,12 +744,11 @@ if (isset($_GET['print_query'])) {
         <div class="col-lg-4 col-md-6">
           <div class="help-card">
             <i class="fas fa-shield-alt"></i>
-            <h6>Security & Compliance</h6>
+            <h6><strong>Security & Compliance</strong> for <?php echo e($locationLabel); ?></h6>
             <p>
-              We prioritize your website security with industry-leading
-              practices. Our websites are built with enterprise-grade security
-              protocols, SSL certificates, and regular security updates to
-              protect your business and customer data <?php echo e($locationPhrase); ?>.
+              We prioritize <strong>website security</strong> with industry-leading
+              practices for businesses in <?php echo e($locationLabel); ?>. Our <strong>web development services</strong> are built with enterprise-grade <strong>security protocols</strong>, <strong>SSL certificates</strong>, and regular security updates to
+              protect your business and customer data <?php echo e($locationPhrase); ?>. Our secure <strong>website design</strong> in <?php echo e($locationLabel); ?> ensures compliance with all security standards.
             </p>
           </div>
         </div>
@@ -757,12 +756,12 @@ if (isset($_GET['print_query'])) {
         <div class="col-lg-4 col-md-6">
           <div class="help-card">
             <i class="fas fa-chart-line"></i>
-            <h6>Proven Track Record</h6>
+            <h6><strong>Proven Track Record</strong> in <?php echo e($locationLabel); ?></h6>
             <p>
-              With over 10 years of experience and 500+ successful projects,
+              With over 10 years of experience and 500+ <strong>successful web projects</strong>,
               we have established partnerships with leading companies across
-              <?php echo e($locationLabel); ?>. Our portfolio speaks for our expertise and commitment
-              to excellence in website development.
+              <?php echo e($locationLabel); ?>. Our <strong>web development portfolio</strong> for <?php echo e($locationLabel); ?> speaks for our <strong>expertise</strong> and commitment
+              to excellence in <strong>website design and development</strong> services. Our proven <strong>web solutions</strong> in <?php echo e($locationLabel); ?> have consistently delivered results.
             </p>
           </div>
         </div>
@@ -770,12 +769,12 @@ if (isset($_GET['print_query'])) {
         <div class="col-lg-4 col-md-6">
           <div class="help-card">
             <i class="fas fa-users"></i>
-            <h6>Dedicated Support Team</h6>
+            <h6><strong>Dedicated Support Team</strong> for <?php echo e($locationLabel); ?></h6>
             <p>
-              Our expert team provides 24/7 support to ensure your website
+              Our <strong>expert web development team</strong> provides <strong>24/7 support</strong> to ensure your website
               runs smoothly. We believe in building long-term relationships
-              and being available whenever you need us in <?php echo e($locationLabel); ?> for updates,
-              maintenance, or emergency support.
+              and being available whenever you need us in <?php echo e($locationLabel); ?> for <strong>website updates</strong>,
+              <strong>maintenance services</strong>, or emergency support. Our <strong>dedicated developers</strong> in <?php echo e($locationLabel); ?> ensure continuous optimization and support for your online presence.
             </p>
           </div>
         </div>
@@ -783,12 +782,11 @@ if (isset($_GET['print_query'])) {
         <div class="col-lg-4 col-md-6">
           <div class="help-card">
             <i class="fas fa-cogs"></i>
-            <h6>Customized Website Solutions</h6>
+            <h6><strong>Customized Website Solutions</strong> in <?php echo e($locationLabel); ?></h6>
             <p>
-              Every business is unique, and so are our websites. We take time
-              to understand your specific requirements and create tailored web
-              solutions that align with your business goals and budget
-              constraints in <?php echo e($locationLabel); ?>.
+              Every business is unique, and so are our <strong>custom websites</strong> for <?php echo e($locationLabel); ?>. We take time
+              to understand your specific requirements and create <strong>tailored web solutions</strong> that align with your business goals and budget
+              constraints. Our <strong>web design services</strong> in <?php echo e($locationLabel); ?> focus on creating personalized <strong>website development</strong> that drives results for your business.
             </p>
           </div>
         </div>
@@ -796,12 +794,11 @@ if (isset($_GET['print_query'])) {
         <div class="col-lg-4 col-md-6">
           <div class="help-card">
             <i class="fas fa-rocket"></i>
-            <h6>Modern Web Technologies</h6>
+            <h6><strong>Modern Web Technologies</strong> for <?php echo e($locationLabel); ?></h6>
             <p>
-              Stay ahead of the competition with the latest web technologies.
-              We use responsive design, fast loading speeds, SEO optimization,
-              and modern frameworks to build scalable, future-proof websites
-              for your business <?php echo e($locationPhrase); ?>.
+              Stay ahead of the competition with the latest <strong>web technologies</strong> used by our developers in <?php echo e($locationLabel); ?>.
+              We use <strong>responsive design</strong>, <strong>fast loading speeds</strong>, <strong>SEO optimization</strong>,
+              and <strong>modern frameworks</strong> to build <strong>scalable websites</strong> for your business <?php echo e($locationPhrase); ?>. Our <strong>web development services</strong> in <?php echo e($locationLabel); ?> ensure future-proof solutions with cutting-edge technology.
             </p>
           </div>
         </div>
@@ -809,12 +806,12 @@ if (isset($_GET['print_query'])) {
         <div class="col-lg-4 col-md-6">
           <div class="help-card">
             <i class="fas fa-handshake"></i>
-            <h6>Transparent Communication</h6>
+            <h6><strong>Transparent Communication</strong> in <?php echo e($locationLabel); ?></h6>
             <p>
-              We believe in complete transparency. Regular progress reports,
-              clear documentation, and open communication channels ensure
-              you're always informed about your website development status in <?php echo e($locationLabel); ?> and
-              can provide feedback at any stage.
+              We believe in <strong>complete transparency</strong> with our clients in <?php echo e($locationLabel); ?>. <strong>Regular progress reports</strong>,
+              <strong>clear documentation</strong>, and <strong>open communication channels</strong> ensure
+              you're always informed about your <strong>web development</strong> status in <?php echo e($locationLabel); ?> and
+              can provide feedback at any stage. Our <strong>dedicated team</strong> in <?php echo e($locationLabel); ?> maintains constant communication throughout the <strong>website development process</strong> for better collaboration and results.
             </p>
           </div>
         </div>
