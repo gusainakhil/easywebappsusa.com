@@ -96,7 +96,7 @@ if (isset($_GET['print_query'])) {
   <meta name="author" content="EverythingEasy" />
   <meta name="robots" content="index, follow" />
   <meta name="googlebot" content="index, follow" />
-  <link rel="canonical" href="https://everythingeasy-usa.com/web-development.html" />
+  <link rel="canonical" href="https://everythingeasy-usa.com/web-development.php" />
 
   <!-- Open Graph / Social -->
   <meta property="og:title" content="<?php echo e($ogTitle !== '' ? $ogTitle : $metaTitle); ?>" />
@@ -409,7 +409,7 @@ if (isset($_GET['print_query'])) {
               <h4 class="fw-bold mb-3 text-center" style="color: #1e3c72; font-size: 1.25rem">
                 Get a Free Quote
               </h4>
-              <form id="heroQuoteForm" class="hero-quote-form" action="form-submit.php" method="post">
+              <form id="heroQuoteForm" class="hero-quote-form" action="/form-submit.php" method="post">
                 <input type="hidden" name="redirect" value="web-development.php" />
                 <input type="hidden" name="source_page" value="web-development" />
                 <input type="hidden" name="form_type" value="hero_quote" />
@@ -1267,8 +1267,8 @@ if (isset($_GET['print_query'])) {
         if (
           href &&
           (href === currentPage ||
-            (currentPage === "" && href === "index.html") ||
-            (!currentPage && href === "index.html"))
+            (currentPage === "" && href === "index.php") ||
+            (!currentPage && href === "index.php"))
         ) {
           link.classList.add("active");
         }
