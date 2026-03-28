@@ -1275,18 +1275,8 @@ if (isset($_GET['print_query'])) {
       });
     }
 
-    fetch("navbar.html")
-      .then((r) => r.text())
-      .then((html) => {
-        document.getElementById("navbar-container").innerHTML = html;
-        setActiveNavLink();
-      });
-
-    fetch("footer.html")
-      .then((r) => r.text())
-      .then((html) => {
-        document.getElementById("footer-container").innerHTML = html;
-      });
+    // Navbar and footer are already included via PHP, no need to fetch
+    setActiveNavLink();
 
     function toggleFaq(element) {
       element.classList.toggle("active");
