@@ -55,6 +55,11 @@ try {
         $quoteId = (int) ($submission['id'] ?? 0);
     }
 
+    // Queue email for background processing instead of sending immediately
+    if ($quoteId > 0) {
+        queueLeadNotificationEmail($quoteId, $leadPayload);
+    }
+
     if ($redirect === 'contact.php') {
         $_SESSION['contact_form_status'] = 'success';
         if (is_array($submission)) {
@@ -62,27 +67,11 @@ try {
         }
         header('Location: ' . $redirect);
         session_write_close();
-
-        if (function_exists('fastcgi_finish_request')) {
-            fastcgi_finish_request();
-        }
-
-        if ($quoteId > 0) {
-            sendLeadNotificationEmails($quoteId, $leadPayload);
-        }
         exit;
     }
 
     header('Location: ' . $redirect . '?form=success');
     session_write_close();
-
-    if (function_exists('fastcgi_finish_request')) {
-        fastcgi_finish_request();
-    }
-
-    if ($quoteId > 0) {
-        sendLeadNotificationEmails($quoteId, $leadPayload);
-    }
     exit;
 } catch (Throwable $t) {
     error_log('form-submit failed: ' . $t->getMessage());

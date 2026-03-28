@@ -483,3 +483,82 @@ if (!function_exists('sendLeadNotificationEmails')) {
         }
     }
 }
+
+if (!function_exists('queueLeadNotificationEmail')) {
+    function queueLeadNotificationEmail(int $quoteId, array $lead): void
+    {
+        try {
+            $queueDir = __DIR__ . '/logs/email-queue';
+            if (!is_dir($queueDir)) {
+                @mkdir($queueDir, 0755, true);
+            }
+            
+            $queueData = json_encode([
+                'quoteId' => $quoteId,
+                'lead' => $lead,
+                'timestamp' => time(),
+                'attempts' => 0
+            ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            
+            $filename = uniqid('lead_', true) . '.json';
+            @file_put_contents($queueDir . '/' . $filename, $queueData);
+            
+            safeLog('Queued email notification for Quote ID: ' . $quoteId);
+            
+            // Optional: Try to process queue in background (non-blocking)
+            processEmailQueue();
+        } catch (Throwable $t) {
+            safeLog('Failed to queue email: ' . $t->getMessage());
+        }
+    }
+}
+
+if (!function_exists('processEmailQueue')) {
+    function processEmailQueue(): void
+    {
+        try {
+            $queueDir = __DIR__ . '/logs/email-queue';
+            if (!is_dir($queueDir)) {
+                return;
+            }
+            
+            $files = @glob($queueDir . '/*.json');
+            if (empty($files) || !is_array($files)) {
+                return;
+            }
+            
+            // Process only first 3 at a time to avoid blocking
+            $files = array_slice($files, 0, 3);
+            
+            foreach ($files as $file) {
+                if (!file_exists($file)) {
+                    continue;
+                }
+                
+                $content = @file_get_contents($file);
+                if (!$content) {
+                    @unlink($file);
+                    continue;
+                }
+                
+                $data = @json_decode($content, true);
+                if (!is_array($data) || !isset($data['quoteId'])) {
+                    @unlink($file);
+                    continue;
+                }
+                
+                $quoteId = (int) $data['quoteId'];
+                $lead = is_array($data['lead']) ? $data['lead'] : [];
+                $attempts = (int) ($data['attempts'] ?? 0);
+                
+                // Try to send email
+                sendLeadNotificationEmails($quoteId, $lead);
+                
+                // Remove from queue after processing
+                @unlink($file);
+            }
+        } catch (Throwable $t) {
+            safeLog('Error processing email queue: ' . $t->getMessage());
+        }
+    }
+}
