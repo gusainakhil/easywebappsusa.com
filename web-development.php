@@ -2,11 +2,57 @@
 require __DIR__ . '/config.php';
 $companyInfo = getCompanyInfo();
 
-$rawLocation = trim((string) ($_GET['location_name'] ?? ''));
-$rawLocation = preg_replace('/[^a-zA-Z0-9\s,\-]/', '', $rawLocation) ?? '';
-$locationName = $rawLocation !== '' ? $rawLocation : 'USA';
-$locationPhrase = strcasecmp($locationName, 'USA') === 0 ? 'in the USA' : 'in ' . $locationName;
-$locationLabel = strcasecmp($locationName, 'USA') === 0 ? 'USA' : $locationName;
+// Fetch location from URL (by slug or location_name)
+$rawSlug = trim((string) ($_GET['slug'] ?? $_GET['location_name'] ?? ''));
+$rawSlug = preg_replace('/[^a-zA-Z0-9\-]/', '', $rawSlug);
+
+$locationData = [
+  'location_name' => 'USA',
+  'city_name' => '',
+  'state' => '',
+  'meta_title' => '',
+  'meta_description' => '',
+  'meta_keyword' => '',
+];
+
+// Query locations table if slug provided
+if ($rawSlug !== '' && dbTableExists('locations')) {
+  try {
+    $stmt = getDbConnection()->prepare('SELECT `location_name`, `city_name`, `state`, `meta_title`, `meta_description`, `meta_keyword` FROM `locations` WHERE `slug` = :slug LIMIT 1');
+    $stmt->execute([':slug' => $rawSlug]);
+    $row = $stmt->fetch();
+    if (is_array($row)) {
+      $locationData = array_merge($locationData, $row);
+    }
+  } catch (Throwable $t) {
+    // Fallback to USA if query fails
+  }
+}
+
+// Build location labels with city_name, state combination
+$locationName = trim((string) ($locationData['location_name'] ?? 'USA'));
+$cityName = trim((string) ($locationData['city_name'] ?? ''));
+$state = trim((string) ($locationData['state'] ?? ''));
+
+// Build location phrase for SEO
+if ($cityName !== '' && $state !== '') {
+  $locationLabel = $cityName . ', ' . $state;
+  $locationPhrase = 'in ' . $locationLabel;
+} elseif ($cityName !== '') {
+  $locationLabel = $cityName;
+  $locationPhrase = 'in ' . $locationLabel;
+} elseif ($state !== '') {
+  $locationLabel = $state;
+  $locationPhrase = 'in ' . $locationLabel;
+} else {
+  $locationLabel = 'USA';
+  $locationPhrase = 'in the USA';
+}
+
+// Use custom meta tags if available from locations table
+$metaTitle = trim((string) ($locationData['meta_title'] ?? ''));
+$metaDescription = trim((string) ($locationData['meta_description'] ?? ''));
+$metaKeyword = trim((string) ($locationData['meta_keyword'] ?? ''));
 
 $serviceSlug = 'web-development';
 $serviceQuery = 'SELECT * FROM `services` WHERE `slug` = :slug LIMIT 1';
@@ -21,7 +67,8 @@ if (isset($_GET['print_query'])) {
   echo "Query:\n" . $serviceQuery . "\n\n";
   echo "Params:\n";
   print_r($serviceQueryParams);
-  echo "\nLocation:\n" . $locationLabel . "\n";
+  echo "\nLocation Data:\n";
+  print_r($locationData);
   exit;
 }
 
@@ -36,28 +83,28 @@ if (isset($_GET['print_query'])) {
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#0066cc" />
-  <title><?php echo e('Web Development Services in ' . $locationLabel . ' - EverythingEasy Technology'); ?></title>
+  <title><?php echo e($metaTitle !== '' ? $metaTitle : 'Web Development Services in ' . $locationLabel . ' - EverythingEasy Technology'); ?></title>
   <meta name="description"
-    content="<?php echo e('Professional web development services in ' . $locationLabel . '. Custom websites, e-commerce solutions, and responsive design for your business growth.'); ?>" />
+    content="<?php echo e($metaDescription !== '' ? $metaDescription : 'Professional web development services in ' . $locationLabel . '. Custom websites, e-commerce solutions, and responsive design for your business growth.'); ?>" />
   <meta name="keywords"
-    content="<?php echo e('web development ' . $locationLabel . ', web design ' . $locationLabel . ', custom websites, e-commerce development'); ?>" />
+    content="<?php echo e($metaKeyword !== '' ? $metaKeyword : 'web development ' . $locationLabel . ', web design ' . $locationLabel . ', custom websites, e-commerce development'); ?>" />
   <meta name="author" content="EverythingEasy" />
   <meta name="robots" content="index, follow" />
   <meta name="googlebot" content="index, follow" />
   <link rel="canonical" href="https://everythingeasy-usa.com/web-development.html" />
 
   <!-- Open Graph / Social -->
-  <meta property="og:title" content="<?php echo e('Professional Web Development Services in ' . $locationLabel . ' - EverythingEasy Technology'); ?>" />
+  <meta property="og:title" content="<?php echo e($metaTitle !== '' ? $metaTitle : 'Professional Web Development Services in ' . $locationLabel . ' - EverythingEasy Technology'); ?>" />
   <meta property="og:description"
-    content="<?php echo e('Get expert web development services in ' . $locationLabel . ' with modern technologies and proven results.'); ?>" />
+    content="<?php echo e($metaDescription !== '' ? $metaDescription : 'Get expert web development services in ' . $locationLabel . ' with modern technologies and proven results.'); ?>" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="EverythingEasy Technology USA" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="<?php echo e('Professional Web Development Services in ' . $locationLabel . ' - EverythingEasy Technology'); ?>" />
+  <meta name="twitter:title" content="<?php echo e($metaTitle !== '' ? $metaTitle : 'Professional Web Development Services in ' . $locationLabel . ' - EverythingEasy Technology'); ?>" />
   <meta name="twitter:description"
-    content="<?php echo e('Get expert web development services in ' . $locationLabel . ' with modern technologies and proven results.'); ?>" />
+    content="<?php echo e($metaDescription !== '' ? $metaDescription : 'Get expert web development services in ' . $locationLabel . ' with modern technologies and proven results.'); ?>" />
 
   <!-- Mobile Meta -->
   <meta name="format-detection" content="telephone=no" />
