@@ -2,7 +2,7 @@
 require __DIR__ . '/config.php';
 $companyInfo = getCompanyInfo();
 
-$rawLocation = trim((string) ($_GET['location'] ?? ''));
+$rawLocation = trim((string) ($_GET['location_name'] ?? ''));
 $rawLocation = preg_replace('/[^a-zA-Z0-9\s,\-]/', '', $rawLocation) ?? '';
 $locationName = $rawLocation !== '' ? $rawLocation : 'USA';
 $locationPhrase = strcasecmp($locationName, 'USA') === 0 ? 'in the USA' : 'in ' . $locationName;
