@@ -1021,35 +1021,35 @@ if (isset($_GET['print_query'])) {
       </div>
 
       <div class="service-grid">
-        <a href="services.html" class="service-card-item">
+        <a href="/services.php" class="service-card-item">
           <i class="fas fa-laptop-code"></i>
           <h6>Web Development</h6>
         </a>
-        <a href="services.html" class="service-card-item">
+        <a href="/services.php" class="service-card-item">
           <i class="fas fa-mobile-alt"></i>
           <h6>Mobile App Development</h6>
         </a>
-        <a href="services.html" class="service-card-item">
+        <a href="/services.php" class="service-card-item">
           <i class="fas fa-cloud"></i>
           <h6>Cloud Solutions</h6>
         </a>
-        <a href="services.html" class="service-card-item">
+        <a href="/services.php" class="service-card-item">
           <i class="fas fa-shopping-cart"></i>
           <h6>E-Commerce Development</h6>
         </a>
-        <a href="services.html" class="service-card-item">
+        <a href="/services.php" class="service-card-item">
           <i class="fas fa-brain"></i>
           <h6>AI & Machine Learning</h6>
         </a>
-        <a href="services.html" class="service-card-item">
+        <a href="/services.php" class="service-card-item">
           <i class="fas fa-server"></i>
           <h6>DevOps Services</h6>
         </a>
-        <a href="services.html" class="service-card-item">
+        <a href="/services.php" class="service-card-item">
           <i class="fas fa-shield-alt"></i>
           <h6>Cybersecurity Solutions</h6>
         </a>
-        <a href="services.html" class="service-card-item">
+        <a href="/services.php" class="service-card-item">
           <i class="fas fa-paint-brush"></i>
           <h6>UI/UX Design</h6>
         </a>
@@ -1223,7 +1223,7 @@ if (isset($_GET['print_query'])) {
           </p>
         </div>
         <div class="col-lg-4 text-lg-end">
-          <a href="contact.html" class="btn btn-primary btn-lg">
+          <a href="/contact.php" class="btn btn-primary btn-lg">
             <i class="fas fa-envelope me-2"></i>Contact Us Now
           </a>
         </div>
