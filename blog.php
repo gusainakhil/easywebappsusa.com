@@ -6,7 +6,7 @@ $companyInfo = getCompanyInfo();
 $blogs = [];
 if (dbTableExists('blogs')) {
   try {
-    $stmt = getDbConnection()->query('SELECT `id`, `title`, `excerpt`, `author`, `created_at`, `views` FROM `blogs` ORDER BY `created_at` DESC LIMIT 12');
+    $stmt = getDbConnection()->query('SELECT `id`, `slug`, `title`, `excerpt`, `author`, `created_at`, `views`, `image` FROM `blogs` ORDER BY `created_at` DESC LIMIT 12');
     $blogs = $stmt->fetchAll();
   } catch (Throwable $t) {
     error_log('Blog query failed: ' . $t->getMessage());
@@ -156,6 +156,7 @@ if (dbTableExists('blogs')) {
           <?php if (!empty($blogs)): ?>
           <div class="row">
             <?php foreach ($blogs as $blog): ?>
+            <?php $blogPath = !empty($blog['slug']) ? '/blog/' . rawurlencode((string) $blog['slug']) : '/blog-detail.php?id=' . (int) $blog['id']; ?>
             <div class="col-lg-4 col-md-6 mb-4">
               <div class="blog-card h-100">
                 <div class="blog-image">
@@ -177,7 +178,7 @@ if (dbTableExists('blogs')) {
                     <?php endif; ?>
                   </div>
                   <h4 class="blog-title fw-bold mb-3">
-                    <a href="/blog-detail.php?id=<?php echo (int)$blog['id']; ?>">
+                    <a href="<?php echo e($blogPath); ?>">
                       <?php echo e($blog['title']); ?>
                     </a>
                   </h4>
@@ -186,7 +187,7 @@ if (dbTableExists('blogs')) {
                   </p>
                   <div class="blog-footer d-flex justify-content-between align-items-center">
                     <a
-                      href="/blog-detail.php?id=<?php echo (int)$blog['id']; ?>"
+                      href="<?php echo e($blogPath); ?>"
                       class="btn btn-outline-primary btn-sm"
                     >
                       Read More <i class="fas fa-arrow-right ms-2"></i>
