@@ -374,7 +374,7 @@ if (isset($_GET['print_query'])) {
 </head>
 
 <body>
-  <?php include "navbar.php"; ?>
+  <?php include __DIR__ . '/navbar.php'; ?>
   <!-- <script src="js/navigation.js"></script> -->
 
   <!-- Hero Section -->
@@ -1248,7 +1248,7 @@ if (isset($_GET['print_query'])) {
     </div>
   </section>
 
-  <?php include "footer.php"; ?>
+  <?php include __DIR__ . '/footer.php'; ?>
 
   <!-- Bootstrap JS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
