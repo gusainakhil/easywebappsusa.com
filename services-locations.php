@@ -1,6 +1,69 @@
 <?php
 require __DIR__ . '/config.php';
 $companyInfo = getCompanyInfo();
+
+$locationCards = [];
+
+if (dbTableExists('locations')) {
+  try {
+    $stmt = getDbConnection()->query(
+      'SELECT `location_name`, `city_name`, `state`, `slug`, `meta_description` FROM `locations` ORDER BY `id` DESC LIMIT 12'
+    );
+    $rows = $stmt->fetchAll();
+
+    foreach ($rows as $row) {
+      $title = trim((string) ($row['location_name'] ?? ''));
+      $city = trim((string) ($row['city_name'] ?? ''));
+      $state = trim((string) ($row['state'] ?? ''));
+      $slug = trim((string) ($row['slug'] ?? ''));
+      $description = trim((string) ($row['meta_description'] ?? ''));
+
+      if ($title === '') {
+        $title = $city;
+      }
+
+      if ($title === '') {
+        continue;
+      }
+
+      if ($description === '') {
+        $description = 'Serving businesses with web development, mobile apps, and digital marketing solutions.';
+      }
+
+      if ($slug === '') {
+        $slug = strtolower((string) preg_replace('/[^a-z0-9]+/i', '-', $title));
+        $slug = trim($slug, '-');
+      }
+
+      $cityState = trim($city . ($state !== '' ? ', ' . $state : ''));
+
+      $locationUrl = 'web-development.php';
+      if ($slug !== '') {
+        $locationUrl = 'location/' . rawurlencode($slug);
+      }
+
+      $locationCards[] = [
+        'title' => $title,
+        'city_state' => $cityState,
+        'description' => $description,
+        'slug' => $slug,
+        'url' => $locationUrl,
+      ];
+    }
+  } catch (Throwable $t) {
+    $locationCards = [];
+  }
+}
+
+if (empty($locationCards)) {
+  $locationCards[] = [
+    'title' => 'New York',
+    'city_state' => 'New York, NY',
+    'description' => 'Serving the New York metropolitan area with web development, mobile apps, and digital marketing solutions.',
+    'slug' => 'new-york',
+    'url' => 'location/new-york',
+  ];
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -113,131 +176,27 @@ $companyInfo = getCompanyInfo();
       <div class="container">
         <h2 class="fw-bold text-center mb-5">Major Service Areas</h2>
         <div class="row">
-          <!-- New York -->
-          <div class="col-md-6 col-lg-4 mb-4">
-            <div
-              class="location-card"
-              style="cursor: pointer"
-              onclick="window.location.href = 'web-development.php'"
-            >
-              <div class="location-icon">
-                <i class="fas fa-map-pin"></i>
+          <?php foreach ($locationCards as $location): ?>
+            <div class="col-md-6 col-lg-4 mb-4">
+              <div
+                class="location-card"
+                style="cursor: pointer"
+                onclick='window.location.href = <?= json_encode((string) ($location['url'] ?? 'web-development.php')) ?>'
+              >
+                <div class="location-icon">
+                  <i class="fas fa-map-pin"></i>
+                </div>
+                <h4 class="fw-bold mb-2"><?= e((string) ($location['title'] ?? '')) ?></h4>
+                <?php if (!empty($location['city_state'])): ?>
+                  <p class="text-primary small mb-2"><?= e((string) $location['city_state']) ?></p>
+                <?php endif; ?>
+                <p class="text-muted mb-3"><?= e((string) ($location['description'] ?? '')) ?></p>
+                <small class="text-muted">
+                  <i class="fas fa-phone me-2"></i><?= e((string) ($companyInfo['company_number'] ?? '')) ?>
+                </small>
               </div>
-              <h4 class="fw-bold mb-2">New York</h4>
-              <p class="text-muted mb-3">
-                Serving the New York metropolitan area with web development,
-                mobile apps, and digital marketing solutions.
-              </p>
-              <small class="text-muted">
-                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
-              </small>
             </div>
-          </div>
-
-          <!-- California -->
-          <div class="col-md-6 col-lg-4 mb-4">
-            <div
-              class="location-card"
-              style="cursor: pointer"
-              onclick="window.location.href = 'app-development.php'"
-            >
-              <div class="location-icon">
-                <i class="fas fa-map-pin"></i>
-              </div>
-              <h4 class="fw-bold mb-2">California</h4>
-              <p class="text-muted mb-3">
-                Supporting startups and enterprises across California with
-                innovative technology solutions and consulting.
-              </p>
-              <small class="text-muted">
-                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
-              </small>
-            </div>
-          </div>
-
-          <!-- Texas -->
-          <div class="col-md-6 col-lg-4 mb-4">
-            <div
-              class="location-card"
-              style="cursor: pointer"
-              onclick="window.location.href = 'web-development.php'"
-            >
-              <div class="location-icon">
-                <i class="fas fa-map-pin"></i>
-              </div>
-              <h4 class="fw-bold mb-2">Texas</h4>
-              <p class="text-muted mb-3">
-                Delivering custom software and cloud solutions to businesses
-                throughout Texas and the Southwest region.
-              </p>
-              <small class="text-muted">
-                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
-              </small>
-            </div>
-          </div>
-
-          <!-- Florida -->
-          <div class="col-md-6 col-lg-4 mb-4">
-            <div
-              class="location-card"
-              style="cursor: pointer"
-              onclick="window.location.href = 'web-development.php'"
-            >
-              <div class="location-icon">
-                <i class="fas fa-map-pin"></i>
-              </div>
-              <h4 class="fw-bold mb-2">Florida</h4>
-              <p class="text-muted mb-3">
-                Providing web and mobile development services to businesses in
-                Miami, Orlando, Tampa, and across Florida.
-              </p>
-              <small class="text-muted">
-                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
-              </small>
-            </div>
-          </div>
-
-          <!-- Illinois -->
-          <div class="col-md-6 col-lg-4 mb-4">
-            <div
-              class="location-card"
-              style="cursor: pointer"
-              onclick="window.location.href = 'web-development.php'"
-            >
-              <div class="location-icon">
-                <i class="fas fa-map-pin"></i>
-              </div>
-              <h4 class="fw-bold mb-2">Illinois</h4>
-              <p class="text-muted mb-3">
-                Serving Chicago and Illinois with enterprise-level IT solutions,
-                cloud services, and digital marketing.
-              </p>
-              <small class="text-muted">
-                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
-              </small>
-            </div>
-          </div>
-
-          <!-- Washington -->
-          <div class="col-md-6 col-lg-4 mb-4">
-            <div
-              class="location-card"
-              style="cursor: pointer"
-              onclick="window.location.href = 'web-development.php'"
-            >
-              <div class="location-icon">
-                <i class="fas fa-map-pin"></i>
-              </div>
-              <h4 class="fw-bold mb-2">Washington</h4>
-              <p class="text-muted mb-3">
-                Supporting Seattle and Washington state businesses with
-                tech-forward solutions and consulting services.
-              </p>
-              <small class="text-muted">
-                <i class="fas fa-phone me-2"></i>+1 (844) EASY-WEB
-              </small>
-            </div>
-          </div>
+          <?php endforeach; ?>
         </div>
       </div>
     </section>
