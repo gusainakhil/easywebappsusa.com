@@ -1,6 +1,17 @@
 <?php
 require __DIR__ . '/config.php';
 $companyInfo = getCompanyInfo();
+
+// Fetch blogs from database
+$blogs = [];
+if (dbTableExists('blogs')) {
+  try {
+    $stmt = getDbConnection()->query('SELECT `id`, `title`, `excerpt`, `author`, `created_at`, `views` FROM `blogs` ORDER BY `created_at` DESC LIMIT 12');
+    $blogs = $stmt->fetchAll();
+  } catch (Throwable $t) {
+    error_log('Blog query failed: ' . $t->getMessage());
+  }
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -35,12 +46,14 @@ $companyInfo = getCompanyInfo();
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
-    <link href="css/style.css" rel="stylesheet" />
+    <link href="/css/style.css" rel="stylesheet" />
     <style>
       .blog-card {
         transition: all 0.3s ease;
         border: none;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
       }
       .blog-card:hover {
         transform: translateY(-5px);
@@ -48,40 +61,68 @@ $companyInfo = getCompanyInfo();
       }
       .blog-image {
         overflow: hidden;
-        background-color: #f0f0f0;
+        background: linear-gradient(135deg, #004da6 0%, #0066cc 100%);
+        height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      }
+      .blog-image i {
+        font-size: 3rem;
+        opacity: 0.3;
       }
       .blog-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
         transition: transform 0.3s ease;
       }
       .blog-card:hover .blog-image img {
         transform: scale(1.05);
       }
       .blog-title {
-        font-size: 1.25rem;
-        color: #333;
+        font-size: 1.15rem;
+        color: #1e3c72;
+        font-weight: 700;
       }
       .blog-title a {
         text-decoration: none;
-        color: #333;
+        color: #1e3c72;
       }
       .blog-title a:hover {
-        color: #0066cc;
+        color: #004da6;
       }
       .blog-meta {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         color: #666;
+      }
+      .blog-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      .blog-excerpt {
+        flex-grow: 1;
+        color: #555;
+        line-height: 1.6;
+      }
+      .blog-footer {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
       }
     </style>
   </head>
 
   <body>
-    <?php include "navbar.php"; ?>
-    <!-- <script src="js/navigation.js"></script> -->
+    <?php include __DIR__ . '/navbar.php'; ?>
+    <!-- <script src="/js/navigation.js"></script> -->
     <main style="margin-top: 35px">
       <!-- Blog Header -->
       <section
         class="page-header bg-gradient-primary text-white py-5"
-        style="padding-top: 120px !important; margin-bottom: 0"
+        style="padding-top: 120px !important; margin-bottom: 0; background: linear-gradient(135deg, #004da6 0%, #0066cc 100%);"
       >
         <div class="container">
           <div class="row">
@@ -94,7 +135,7 @@ $companyInfo = getCompanyInfo();
               <nav aria-label="breadcrumb">
                 <ol class="breadcrumb justify-content-center bg-transparent">
                   <li class="breadcrumb-item">
-                    <a href="index.html" class="text-warning">Home</a>
+                    <a href="/index.php" class="text-warning">Home</a>
                   </li>
                   <li
                     class="breadcrumb-item active text-white"
@@ -112,283 +153,60 @@ $companyInfo = getCompanyInfo();
       <!-- Blog Posts Section -->
       <section class="py-5">
         <div class="container">
-          <div class="row" id="blogPostsContainer">
-            <!-- Blog Post 1 -->
+          <?php if (!empty($blogs)): ?>
+          <div class="row">
+            <?php foreach ($blogs as $blog): ?>
             <div class="col-lg-4 col-md-6 mb-4">
               <div class="blog-card h-100">
                 <div class="blog-image">
-                  <img
-                    src="https://via.placeholder.com/400x250?text=Web+Development"
-                    alt="Web Development Trends"
-                    class="img-fluid rounded-top"
-                    style="height: 250px; object-fit: cover; width: 100%"
-                  />
+                  <?php if (!empty($blog['image'])): ?>
+                    <img src="<?php echo e($blog['image']); ?>" alt="<?php echo e($blog['title']); ?>" />
+                  <?php else: ?>
+                    <i class="fas fa-newspaper"></i>
+                  <?php endif; ?>
                 </div>
                 <div class="blog-content p-4">
                   <div class="blog-meta mb-3">
                     <span class="text-muted">
-                      <i class="fas fa-calendar-alt me-2"></i>March 15, 2024
+                      <i class="fas fa-calendar-alt me-2"></i><?php echo date('M d, Y', strtotime($blog['created_at'])); ?>
                     </span>
+                    <?php if (!empty($blog['author'])): ?>
                     <span class="text-muted ms-3">
-                      <i class="fas fa-user me-2"></i>John Smith
+                      <i class="fas fa-user me-2"></i><?php echo e($blog['author']); ?>
                     </span>
+                    <?php endif; ?>
                   </div>
                   <h4 class="blog-title fw-bold mb-3">
-                    <a href="blog-detail.html?id=1"
-                      >Latest Web Development Trends in 2024</a
-                    >
+                    <a href="/blog-detail.php?id=<?php echo (int)$blog['id']; ?>">
+                      <?php echo e($blog['title']); ?>
+                    </a>
                   </h4>
-                  <p class="text-muted mb-3">
-                    Discover the cutting-edge technologies and frameworks
-                    shaping modern web development this year...
+                  <p class="blog-excerpt text-muted mb-3">
+                    <?php echo e(substr($blog['excerpt'], 0, 120) . (strlen($blog['excerpt']) > 120 ? '...' : '')); ?>
                   </p>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
+                  <div class="blog-footer d-flex justify-content-between align-items-center">
                     <a
-                      href="blog-detail.html?id=1"
-                      class="btn btn-outline-primary"
+                      href="/blog-detail.php?id=<?php echo (int)$blog['id']; ?>"
+                      class="btn btn-outline-primary btn-sm"
                     >
                       Read More <i class="fas fa-arrow-right ms-2"></i>
                     </a>
                     <small class="text-muted">
-                      <i class="fas fa-eye me-1"></i>523 views
+                      <i class="fas fa-eye me-1"></i><?php echo (int)($blog['views'] ?? 0); ?> views
                     </small>
                   </div>
                 </div>
               </div>
             </div>
-
-            <!-- Blog Post 2 -->
-            <div class="col-lg-4 col-md-6 mb-4">
-              <div class="blog-card h-100">
-                <div class="blog-image">
-                  <img
-                    src="https://via.placeholder.com/400x250?text=App+Security"
-                    alt="App Security"
-                    class="img-fluid rounded-top"
-                    style="height: 250px; object-fit: cover; width: 100%"
-                  />
-                </div>
-                <div class="blog-content p-4">
-                  <div class="blog-meta mb-3">
-                    <span class="text-muted">
-                      <i class="fas fa-calendar-alt me-2"></i>March 10, 2024
-                    </span>
-                    <span class="text-muted ms-3">
-                      <i class="fas fa-user me-2"></i>Sarah Johnson
-                    </span>
-                  </div>
-                  <h4 class="blog-title fw-bold mb-3">
-                    <a href="blog-detail.html?id=2"
-                      >The Importance of Application Security</a
-                    >
-                  </h4>
-                  <p class="text-muted mb-3">
-                    Learn best practices for securing your applications and
-                    protecting user data from cyber threats...
-                  </p>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <a
-                      href="blog-detail.html?id=2"
-                      class="btn btn-outline-primary"
-                    >
-                      Read More <i class="fas fa-arrow-right ms-2"></i>
-                    </a>
-                    <small class="text-muted">
-                      <i class="fas fa-eye me-1"></i>368 views
-                    </small>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Blog Post 3 -->
-            <div class="col-lg-4 col-md-6 mb-4">
-              <div class="blog-card h-100">
-                <div class="blog-image">
-                  <img
-                    src="https://via.placeholder.com/400x250?text=Digital+Marketing"
-                    alt="Digital Marketing"
-                    class="img-fluid rounded-top"
-                    style="height: 250px; object-fit: cover; width: 100%"
-                  />
-                </div>
-                <div class="blog-content p-4">
-                  <div class="blog-meta mb-3">
-                    <span class="text-muted">
-                      <i class="fas fa-calendar-alt me-2"></i>March 5, 2024
-                    </span>
-                    <span class="text-muted ms-3">
-                      <i class="fas fa-user me-2"></i>Mike Davis
-                    </span>
-                  </div>
-                  <h4 class="blog-title fw-bold mb-3">
-                    <a href="blog-detail.html?id=3"
-                      >Digital Marketing Strategies for 2024</a
-                    >
-                  </h4>
-                  <p class="text-muted mb-3">
-                    Build effective digital marketing campaigns with proven
-                    strategies that drive real business results...
-                  </p>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <a
-                      href="blog-detail.html?id=3"
-                      class="btn btn-outline-primary"
-                    >
-                      Read More <i class="fas fa-arrow-right ms-2"></i>
-                    </a>
-                    <small class="text-muted">
-                      <i class="fas fa-eye me-1"></i>614 views
-                    </small>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Blog Post 4 -->
-            <div class="col-lg-4 col-md-6 mb-4">
-              <div class="blog-card h-100">
-                <div class="blog-image">
-                  <img
-                    src="https://via.placeholder.com/400x250?text=Cloud+Computing"
-                    alt="Cloud Solutions"
-                    class="img-fluid rounded-top"
-                    style="height: 250px; object-fit: cover; width: 100%"
-                  />
-                </div>
-                <div class="blog-content p-4">
-                  <div class="blog-meta mb-3">
-                    <span class="text-muted">
-                      <i class="fas fa-calendar-alt me-2"></i>February 28, 2024
-                    </span>
-                    <span class="text-muted ms-3">
-                      <i class="fas fa-user me-2"></i>Emily Brown
-                    </span>
-                  </div>
-                  <h4 class="blog-title fw-bold mb-3">
-                    <a href="blog-detail.html?id=4"
-                      >Cloud Computing: Benefits and Implementation</a
-                    >
-                  </h4>
-                  <p class="text-muted mb-3">
-                    Explore how cloud computing can transform your business
-                    operations and reduce IT costs...
-                  </p>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <a
-                      href="blog-detail.html?id=4"
-                      class="btn btn-outline-primary"
-                    >
-                      Read More <i class="fas fa-arrow-right ms-2"></i>
-                    </a>
-                    <small class="text-muted">
-                      <i class="fas fa-eye me-1"></i>445 views
-                    </small>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Blog Post 5 -->
-            <div class="col-lg-4 col-md-6 mb-4">
-              <div class="blog-card h-100">
-                <div class="blog-image">
-                  <img
-                    src="https://via.placeholder.com/400x250?text=AI+Technology"
-                    alt="AI Solutions"
-                    class="img-fluid rounded-top"
-                    style="height: 250px; object-fit: cover; width: 100%"
-                  />
-                </div>
-                <div class="blog-content p-4">
-                  <div class="blog-meta mb-3">
-                    <span class="text-muted">
-                      <i class="fas fa-calendar-alt me-2"></i>February 20, 2024
-                    </span>
-                    <span class="text-muted ms-3">
-                      <i class="fas fa-user me-2"></i>Alex Wilson
-                    </span>
-                  </div>
-                  <h4 class="blog-title fw-bold mb-3">
-                    <a href="blog-detail.html?id=5"
-                      >Artificial Intelligence in Business</a
-                    >
-                  </h4>
-                  <p class="text-muted mb-3">
-                    Understand how AI is revolutionizing businesses and creating
-                    new opportunities in various industries...
-                  </p>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <a
-                      href="blog-detail.html?id=5"
-                      class="btn btn-outline-primary"
-                    >
-                      Read More <i class="fas fa-arrow-right ms-2"></i>
-                    </a>
-                    <small class="text-muted">
-                      <i class="fas fa-eye me-1"></i>732 views
-                    </small>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Blog Post 6 -->
-            <div class="col-lg-4 col-md-6 mb-4">
-              <div class="blog-card h-100">
-                <div class="blog-image">
-                  <img
-                    src="https://via.placeholder.com/400x250?text=Mobile+Apps"
-                    alt="Mobile Development"
-                    class="img-fluid rounded-top"
-                    style="height: 250px; object-fit: cover; width: 100%"
-                  />
-                </div>
-                <div class="blog-content p-4">
-                  <div class="blog-meta mb-3">
-                    <span class="text-muted">
-                      <i class="fas fa-calendar-alt me-2"></i>February 15, 2024
-                    </span>
-                    <span class="text-muted ms-3">
-                      <i class="fas fa-user me-2"></i>Jessica Lee
-                    </span>
-                  </div>
-                  <h4 class="blog-title fw-bold mb-3">
-                    <a href="blog-detail.html?id=6"
-                      >Building Successful Mobile Applications</a
-                    >
-                  </h4>
-                  <p class="text-muted mb-3">
-                    Key strategies for developing mobile apps that users love
-                    and that drive business growth...
-                  </p>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <a
-                      href="blog-detail.html?id=6"
-                      class="btn btn-outline-primary"
-                    >
-                      Read More <i class="fas fa-arrow-right ms-2"></i>
-                    </a>
-                    <small class="text-muted">
-                      <i class="fas fa-eye me-1"></i>589 views
-                    </small>
-                  </div>
-                </div>
-              </div>
+            <?php endforeach; ?>
+          </div>
+          <?php else: ?>
+          <div class="row">
+            <div class="col-12 text-center py-5">
+              <p class="text-muted fs-5">No blog posts available at the moment.</p>
             </div>
           </div>
+          <?php endif; ?>
         </div>
       </section>
 
@@ -416,7 +234,7 @@ $companyInfo = getCompanyInfo();
         </div>
       </section>
 
-     <?php include "footer.php"; ?>
+     <?php include __DIR__ . '/footer.php'; ?>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -433,36 +251,15 @@ $companyInfo = getCompanyInfo();
           if (
             href &&
             (href === currentPage ||
-              (currentPage === "" && href === "index.html") ||
-              (!currentPage && href === "index.html"))
+              (currentPage === "" && href === "index.php") ||
+              (!currentPage && href === "index.php"))
           ) {
             link.classList.add("active");
           }
         });
       }
 
-      // Load navbar and footer dynamically
-      document.getElementById("navbar-container").innerHTML =
-        '<div id="navbar-placeholder"></div>';
-      document.getElementById("footer-container").innerHTML =
-        '<div id="footer-placeholder"></div>';
-
-      fetch("navbar.html")
-        .then((r) => r.text())
-        .then((html) => {
-          document.getElementById(
-            "navbar-placeholder",
-          ).parentElement.innerHTML = html;
-          setActiveNavLink();
-        });
-
-      fetch("footer.html")
-        .then((r) => r.text())
-        .then((html) => {
-          document.getElementById(
-            "footer-placeholder",
-          ).parentElement.innerHTML = html;
-        });
+      setActiveNavLink();
     </script>
   </body>
 </html>
