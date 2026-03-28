@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/config';
+require __DIR__ . '/config.php';
 ?>
 <nav
   id="navbar"
@@ -9,7 +9,7 @@ require __DIR__ . '/config';
   <div class="container">
     <a
       class="navbar-brand fw-bold text-primary d-flex align-items-center"
-      href="/index"
+      href="/index.php"
     >
       <img
         src="/images/logo.webp"
@@ -29,25 +29,25 @@ require __DIR__ . '/config';
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" href="/index">Home</a>
+          <a class="nav-link" href="/index.php">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/about">About</a>
+          <a class="nav-link" href="/about.php">About</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/services">Services</a>
+          <a class="nav-link" href="/services.php">Services</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/blog">Blog</a>
+          <a class="nav-link" href="/blog.php">Blog</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/career">Careers</a>
+          <a class="nav-link" href="/career.php">Careers</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/contact">Contact</a>
+          <a class="nav-link" href="/contact.php">Contact</a>
         </li>
         <li class="nav-item">
-          <a class="btn btn-primary btn-sm ms-3" href="/index">Get Quote</a>
+          <a class="btn btn-primary btn-sm ms-3" href="/index.php">Get Quote</a>
         </li>
       </ul>
     </div>
