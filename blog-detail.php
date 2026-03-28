@@ -1,6 +1,54 @@
 <?php
 require __DIR__ . '/config.php';
 $companyInfo = getCompanyInfo();
+
+// Fetch blog by ID or slug
+$blogId = (int) ($_GET['id'] ?? 0);
+$blogSlug = trim((string) ($_GET['slug'] ?? ''));
+$blog = null;
+$relatedBlogs = [];
+
+if (dbTableExists('blogs')) {
+  try {
+    if ($blogId > 0) {
+      $stmt = getDbConnection()->prepare('SELECT * FROM `blogs` WHERE `id` = :id LIMIT 1');
+      $stmt->execute([':id' => $blogId]);
+      $blog = $stmt->fetch();
+    } elseif ($blogSlug !== '') {
+      $stmt = getDbConnection()->prepare('SELECT * FROM `blogs` WHERE `slug` = :slug LIMIT 1');
+      $stmt->execute([':slug' => $blogSlug]);
+      $blog = $stmt->fetch();
+    }
+
+    // Fetch related blogs (excluding current)
+    if (is_array($blog) && isset($blog['id'])) {
+      $stmt = getDbConnection()->prepare('SELECT `id`, `slug`, `title`, `excerpt`, `image` FROM `blogs` WHERE `id` != :id ORDER BY `created_at` DESC LIMIT 6');
+      $stmt->execute([':id' => $blog['id']]);
+      $relatedBlogs = $stmt->fetchAll();
+    }
+  } catch (Throwable $t) {
+    error_log('Blog detail query failed: ' . $t->getMessage());
+  }
+}
+
+// Set default values if blog not found
+if (!is_array($blog)) {
+  $blog = [
+    'id' => 0,
+    'title' => 'Blog Post Not Found',
+    'content' => 'The blog post you are looking for does not exist.',
+    'author' => 'EverythingEasy',
+    'created_at' => date('Y-m-d H:i:s'),
+    'views' => 0,
+    'image' => '',
+    'meta_description' => 'Blog post not found',
+    'meta_keywords' => 'blog, article',
+  ];
+}
+
+$blogTitle = (string) ($blog['title'] ?? 'Blog Post');
+$blogDescription = (string) ($blog['meta_description'] ?? substr(strip_tags($blog['content'] ?? ''), 0, 160));
+$blogKeywords = (string) ($blog['meta_keywords'] ?? 'blog, article, technology');
 ?>
 <!doctype html>
 <html lang="en">
@@ -14,15 +62,15 @@ $companyInfo = getCompanyInfo();
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="theme-color" content="#0066cc" />
-    <meta
-      name="description"
-      content="Read detailed insights and in-depth analysis on technology, web development, and digital solutions from EverythingEasy USA."
-    />
-    <meta
-      name="keywords"
-      content="technology article, blog post, web development, IT solutions, digital marketing"
-    />
-    <title>Blog Post - EverythingEasy Technology USA</title>
+    <meta name="description" content="<?php echo e($blogDescription); ?>" />
+    <meta name="keywords" content="<?php echo e($blogKeywords); ?>" />
+    <meta property="og:title" content="<?php echo e($blogTitle); ?>" />
+    <meta property="og:description" content="<?php echo e($blogDescription); ?>" />
+    <meta property="og:type" content="article" />
+    <?php if (!empty($blog['image'])): ?>
+    <meta property="og:image" content="<?php echo e($blog['image']); ?>" />
+    <?php endif; ?>
+    <title><?php echo e($blogTitle); ?> - EverythingEasy Technology USA</title>
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
       rel="stylesheet"
