@@ -4,6 +4,20 @@ $companyInfo = getCompanyInfo();
 ?>
 <!-- Footer -->
 <footer class="bg-dark text-white py-5" style="background-color: #212529 !important; color: white;">
+  <style>
+    footer .text-muted {
+      color: #a8a8a8 !important;
+    }
+    footer p {
+      color: #a8a8a8 !important;
+    }
+    footer a {
+      color: #a8a8a8 !important;
+    }
+    footer h5, footer h6 {
+      color: white !important;
+    }
+  </style>
   <div class="container">
     <div class="row">
       <!-- About Section -->
