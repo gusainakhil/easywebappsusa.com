@@ -13,12 +13,13 @@ $locationData = [
   'meta_title' => '',
   'meta_description' => '',
   'meta_keyword' => '',
+  'og_title' => '',
 ];
 
 // Query locations table if slug provided
 if ($rawSlug !== '' && dbTableExists('locations')) {
   try {
-    $stmt = getDbConnection()->prepare('SELECT `location_name`, `city_name`, `state`, `meta_title`, `meta_description`, `meta_keyword` FROM `locations` WHERE `slug` = :slug LIMIT 1');
+    $stmt = getDbConnection()->prepare('SELECT `location_name`, `city_name`, `state`, `meta_title`, `meta_description`, `meta_keyword`, `og_title` FROM `locations` WHERE `slug` = :slug LIMIT 1');
     $stmt->execute([':slug' => $rawSlug]);
     $row = $stmt->fetch();
     if (is_array($row)) {
@@ -49,17 +50,21 @@ if ($cityName !== '' && $state !== '') {
   $locationPhrase = 'in the USA';
 }
 
-// Use custom meta tags if available from locations table
+// Use custom meta tags and values directly from database
 $metaTitle = trim((string) ($locationData['meta_title'] ?? ''));
 $metaDescription = trim((string) ($locationData['meta_description'] ?? ''));
 $metaKeyword = trim((string) ($locationData['meta_keyword'] ?? ''));
+$ogTitle = trim((string) ($locationData['og_title'] ?? ''));
 
 $serviceSlug = 'web-development';
 $serviceQuery = 'SELECT * FROM `services` WHERE `slug` = :slug LIMIT 1';
 $serviceQueryParams = [':slug' => $serviceSlug];
 
+// Use meta_title as h1 if available, otherwise generate from location
+$h1Title = $metaTitle !== '' ? $metaTitle : 'Web Development Services ' . $locationPhrase;
+
 $serviceInfo = [
-  'title' => 'Web Development Services ' . $locationPhrase,
+  'title' => $h1Title,
 ];
 
 if (isset($_GET['print_query'])) {
@@ -83,28 +88,28 @@ if (isset($_GET['print_query'])) {
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#0066cc" />
-  <title><?php echo e($metaTitle !== '' ? $metaTitle : 'Web Development Services in ' . $locationLabel . ' - EverythingEasy Technology'); ?></title>
+  <title><?php echo e($metaTitle); ?></title>
   <meta name="description"
-    content="<?php echo e($metaDescription !== '' ? $metaDescription : 'Professional web development services in ' . $locationLabel . '. Custom websites, e-commerce solutions, and responsive design for your business growth.'); ?>" />
+    content="<?php echo e($metaDescription); ?>" />
   <meta name="keywords"
-    content="<?php echo e($metaKeyword !== '' ? $metaKeyword : 'web development ' . $locationLabel . ', web design ' . $locationLabel . ', custom websites, e-commerce development'); ?>" />
+    content="<?php echo e($metaKeyword); ?>" />
   <meta name="author" content="EverythingEasy" />
   <meta name="robots" content="index, follow" />
   <meta name="googlebot" content="index, follow" />
   <link rel="canonical" href="https://everythingeasy-usa.com/web-development.html" />
 
   <!-- Open Graph / Social -->
-  <meta property="og:title" content="<?php echo e($metaTitle !== '' ? $metaTitle : 'Professional Web Development Services in ' . $locationLabel . ' - EverythingEasy Technology'); ?>" />
+  <meta property="og:title" content="<?php echo e($ogTitle !== '' ? $ogTitle : $metaTitle); ?>" />
   <meta property="og:description"
-    content="<?php echo e($metaDescription !== '' ? $metaDescription : 'Get expert web development services in ' . $locationLabel . ' with modern technologies and proven results.'); ?>" />
+    content="<?php echo e($metaDescription); ?>" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="EverythingEasy Technology USA" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="<?php echo e($metaTitle !== '' ? $metaTitle : 'Professional Web Development Services in ' . $locationLabel . ' - EverythingEasy Technology'); ?>" />
+  <meta name="twitter:title" content="<?php echo e($ogTitle !== '' ? $ogTitle : $metaTitle); ?>" />
   <meta name="twitter:description"
-    content="<?php echo e($metaDescription !== '' ? $metaDescription : 'Get expert web development services in ' . $locationLabel . ' with modern technologies and proven results.'); ?>" />
+    content="<?php echo e($metaDescription); ?>" />
 
   <!-- Mobile Meta -->
   <meta name="format-detection" content="telephone=no" />
