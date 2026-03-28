@@ -384,17 +384,17 @@ if (isset($_GET['print_query'])) {
         <div class="col-lg-6">
           <div class="hero-content">
             <h5 class="text-warning mb-3">
-              PROFESSIONAL WEBSITE DEVELOPMENT
+              <strong>PROFESSIONAL WEBSITE DEVELOPMENT SERVICES</strong>
             </h5>
             <h1 class="display-4 fw-bold mb-4 text-white">
               <?php echo ((string) ($serviceInfo['title'] ?? '')) ?>
             </h1>
             <p class="lead mb-4 text-white" style="font-size: 1.35rem">
-              Unleash the power of professional website development and take
-              your business to the next level. Our expert team specializes in
-              creating stunning, responsive websites that drive results. With
-              10+ years of experience, we help businesses <?php echo e($locationPhrase); ?>
-              establish a strong online presence and dominate local search results.
+              Unleash the power of <strong>professional website development</strong> and take
+              your business to the next level. Our <strong>expert web development team</strong> specializes in
+              creating <strong>stunning, responsive websites</strong> that drive measurable results. With
+              <strong>10+ years of experience</strong> in <strong>custom web solutions</strong>, we help businesses <?php echo e($locationPhrase); ?>
+              establish a <strong>strong online presence</strong> and dominate local search results with proven <strong>web design and development</strong> strategies.
             </p>
           </div>
         </div>
@@ -408,7 +408,7 @@ if (isset($_GET['print_query'])) {
               " id="hero-contact-form">
             <div class="card-body p-3 p-md-4">
               <h4 class="fw-bold mb-3 text-center" style="color: #1e3c72; font-size: 1.25rem">
-                Get a Free Quote
+                <strong>Get Your Free Web Development Quote</strong>
               </h4>
               <form id="heroQuoteForm" class="hero-quote-form" action="form-submit.php" method="post">
                 <input type="hidden" name="redirect" value="web-development.php" />
@@ -529,14 +529,11 @@ if (isset($_GET['print_query'])) {
   <section class="case-study-section">
     <div class="container">
       <div class="text-center mb-5">
-        <h2 class="fw-bold">Case Studies - Our Clients' Success Stories</h2>
+        <h2 class="fw-bold"><strong>Case Studies</strong> - Our Clients' <strong>Web Development</strong> Success Stories</h2>
         <p class="lead text-muted">
-          We specialize in delivering exceptional and affordable website
-          development services that drive significant growth for our clients
-          nationwide. With extensive experience across various industries
-          including hospitality, e-commerce, education, and local businesses,
-          we have a proven track record of helping businesses achieve their
-          online goals.
+          We specialize in delivering <strong>exceptional and affordable website development services</strong> that drive significant growth for our clients nationwide. With extensive experience across various industries
+          including <strong>hospitality, e-commerce, education, and local businesses</strong>, we have a <strong>proven track record</strong> of helping businesses achieve their
+          <strong>online goals</strong> through <strong>custom web solutions</strong> and <strong>professional web design</strong>. Our <strong>web development portfolio</strong> demonstrates measurable results across diverse sectors.
         </p>
       </div>
 
@@ -554,8 +551,8 @@ if (isset($_GET['print_query'])) {
                 EC
               </div>
               <div class="ms-3">
-                <h5 class="mb-1">E-Commerce Platform</h5>
-                <p class="text-muted mb-0">Online Retail Solutions</p>
+                <h5 class="mb-1"><strong>E-Commerce Platform Development</strong></h5>
+                <p class="text-muted mb-0"><strong>Custom Online Retail Solutions</strong> & Shopping Cart Integration</p>
               </div>
             </div>
             <table class="results-table">
@@ -567,19 +564,19 @@ if (isset($_GET['print_query'])) {
               </thead>
               <tbody>
                 <tr>
-                  <td>Page Load Speed</td>
+                  <td><strong>Page Load Speed</strong></td>
                   <td><span class="badge-success">↑ 75%</span></td>
                 </tr>
                 <tr>
-                  <td>System Uptime</td>
+                  <td><strong>System Uptime</strong></td>
                   <td><span class="badge-success">99.9%</span></td>
                 </tr>
                 <tr>
-                  <td>Transaction Processing</td>
+                  <td><strong>Transaction Processing</strong></td>
                   <td><span class="badge-success">↑ 200%</span></td>
                 </tr>
                 <tr>
-                  <td>Security Incidents</td>
+                  <td><strong>Security & SSL Protection</strong></td>
                   <td><span class="badge-success">↓ 95%</span></td>
                 </tr>
               </tbody>
@@ -600,8 +597,8 @@ if (isset($_GET['print_query'])) {
                 HC
               </div>
               <div class="ms-3">
-                <h5 class="mb-1">Healthcare Management System</h5>
-                <p class="text-muted mb-0">Digital Health Solutions</p>
+                <h5 class="mb-1"><strong>Healthcare Management System</strong></h5>
+                <p class="text-muted mb-0"><strong>HIPAA-Compliant</strong> Digital Health & Telemedicine Solutions</p>
               </div>
             </div>
             <table class="results-table">
@@ -613,19 +610,19 @@ if (isset($_GET['print_query'])) {
               </thead>
               <tbody>
                 <tr>
-                  <td>Patient Data Processing</td>
+                  <td><strong>Patient Data Processing</strong></td>
                   <td><span class="badge-success">↑ 150%</span></td>
                 </tr>
                 <tr>
-                  <td>Appointment Automation</td>
+                  <td><strong>Appointment Automation</strong></td>
                   <td><span class="badge-success">90%</span></td>
                 </tr>
                 <tr>
-                  <td>Data Security Compliance</td>
+                  <td><strong>HIPAA Compliance</strong></td>
                   <td><span class="badge-success">100%</span></td>
                 </tr>
                 <tr>
-                  <td>Staff Productivity</td>
+                  <td><strong>Staff Productivity Gain</strong></td>
                   <td><span class="badge-success">↑ 65%</span></td>
                 </tr>
               </tbody>
@@ -646,8 +643,8 @@ if (isset($_GET['print_query'])) {
                 FT
               </div>
               <div class="ms-3">
-                <h5 class="mb-1">FinTech Application</h5>
-                <p class="text-muted mb-0">Financial Technology Platform</p>
+                <h5 class="mb-1"><strong>FinTech Web Application</strong></h5>
+                <p class="text-muted mb-0"><strong>Secure Payment Gateway</strong> & Financial Technology Platform</p>
               </div>
             </div>
             <table class="results-table">
@@ -659,19 +656,19 @@ if (isset($_GET['print_query'])) {
               </thead>
               <tbody>
                 <tr>
-                  <td>Transaction Security</td>
+                  <td><strong>Transaction Security</strong></td>
                   <td><span class="badge-success">Bank-Grade</span></td>
                 </tr>
                 <tr>
-                  <td>API Response Time</td>
+                  <td><strong>API Response Time</strong></td>
                   <td><span class="badge-success">↓ 80%</span></td>
                 </tr>
                 <tr>
-                  <td>User Authentication</td>
-                  <td><span class="badge-success">Multi-Factor</span></td>
+                  <td><strong>Multi-Factor Authentication</strong></td>
+                  <td><span class="badge-success">Enabled</span></td>
                 </tr>
                 <tr>
-                  <td>Scalability</td>
+                  <td><strong>Platform Scalability</strong></td>
                   <td><span class="badge-success">↑ 300%</span></td>
                 </tr>
               </tbody>
@@ -692,8 +689,8 @@ if (isset($_GET['print_query'])) {
                 ED
               </div>
               <div class="ms-3">
-                <h5 class="mb-1">Education Portal</h5>
-                <p class="text-muted mb-0">E-Learning Platform</p>
+                <h5 class="mb-1"><strong>Education Portal Development</strong></h5>
+                <p class="text-muted mb-0"><strong>Responsive E-Learning Platform</strong> with Video Streaming</p>
               </div>
             </div>
             <table class="results-table">
@@ -705,19 +702,19 @@ if (isset($_GET['print_query'])) {
               </thead>
               <tbody>
                 <tr>
-                  <td>Concurrent Users</td>
+                  <td><strong>Concurrent Users Support</strong></td>
                   <td><span class="badge-success">10,000+</span></td>
                 </tr>
                 <tr>
-                  <td>Video Streaming Quality</td>
+                  <td><strong>Video Streaming Quality</strong></td>
                   <td><span class="badge-success">4K Ready</span></td>
                 </tr>
                 <tr>
-                  <td>Mobile Accessibility</td>
+                  <td><strong>Mobile & Responsive Design</strong></td>
                   <td><span class="badge-success">Cross-Platform</span></td>
                 </tr>
                 <tr>
-                  <td>Content Delivery</td>
+                  <td><strong>Content Delivery Performance</strong></td>
                   <td><span class="badge-success">↑ 120%</span></td>
                 </tr>
               </tbody>
