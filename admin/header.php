@@ -30,6 +30,7 @@
         <a class="<?= $activeKey === 'job_applications' ? 'active' : '' ?>" href="job-applications.php">Job Applications</a>
         <a class="<?= $activeKey === 'locations' ? 'active' : '' ?>" href="locations.php">Locations</a>
         <a class="<?= $activeKey === 'locations_application' ? 'active' : '' ?>" href="locations-application.php">Locations App</a>
+        <a class="<?= $activeKey === 'sitemap' ? 'active' : '' ?>" href="sitemap.php">Sitemap</a>
       </nav>
 
       <div class="sidebar-foot">
