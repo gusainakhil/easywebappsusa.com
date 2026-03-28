@@ -1,6 +1,30 @@
 <?php
 require __DIR__ . '/config.php';
 $companyInfo = getCompanyInfo();
+
+$rawLocation = trim((string) ($_GET['location'] ?? ''));
+$rawLocation = preg_replace('/[^a-zA-Z0-9\s,\-]/', '', $rawLocation) ?? '';
+$locationName = $rawLocation !== '' ? $rawLocation : 'USA';
+$locationPhrase = strcasecmp($locationName, 'USA') === 0 ? 'in the USA' : 'in ' . $locationName;
+$locationLabel = strcasecmp($locationName, 'USA') === 0 ? 'USA' : $locationName;
+
+$serviceSlug = 'web-development';
+$serviceQuery = 'SELECT * FROM `services` WHERE `slug` = :slug LIMIT 1';
+$serviceQueryParams = [':slug' => $serviceSlug];
+
+$serviceInfo = [
+  'title' => 'Web Development Services ' . $locationPhrase,
+];
+
+if (isset($_GET['print_query'])) {
+  header('Content-Type: text/plain; charset=UTF-8');
+  echo "Query:\n" . $serviceQuery . "\n\n";
+  echo "Params:\n";
+  print_r($serviceQueryParams);
+  echo "\nLocation:\n" . $locationLabel . "\n";
+  exit;
+}
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -12,28 +36,28 @@ $companyInfo = getCompanyInfo();
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="theme-color" content="#0066cc" />
-  <title>Web Development Services - EverythingEasy Technology USA</title>
+  <title><?php echo e('Web Development Services in ' . $locationLabel . ' - EverythingEasy Technology'); ?></title>
   <meta name="description"
-    content="Professional web development services in the USA. Custom websites, e-commerce solutions, and responsive design for your business growth." />
+    content="<?php echo e('Professional web development services in ' . $locationLabel . '. Custom websites, e-commerce solutions, and responsive design for your business growth.'); ?>" />
   <meta name="keywords"
-    content="web development, web design, website development USA, custom websites, e-commerce development" />
+    content="<?php echo e('web development ' . $locationLabel . ', web design ' . $locationLabel . ', custom websites, e-commerce development'); ?>" />
   <meta name="author" content="EverythingEasy" />
   <meta name="robots" content="index, follow" />
   <meta name="googlebot" content="index, follow" />
   <link rel="canonical" href="https://everythingeasy-usa.com/web-development.html" />
 
   <!-- Open Graph / Social -->
-  <meta property="og:title" content="Professional Web Development Services - EverythingEasy Technology USA" />
+  <meta property="og:title" content="<?php echo e('Professional Web Development Services in ' . $locationLabel . ' - EverythingEasy Technology'); ?>" />
   <meta property="og:description"
-    content="Get expert web development services with modern technologies and proven results." />
+    content="<?php echo e('Get expert web development services in ' . $locationLabel . ' with modern technologies and proven results.'); ?>" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="EverythingEasy Technology USA" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Professional Web Development Services - EverythingEasy Technology USA" />
+  <meta name="twitter:title" content="<?php echo e('Professional Web Development Services in ' . $locationLabel . ' - EverythingEasy Technology'); ?>" />
   <meta name="twitter:description"
-    content="Get expert web development services with modern technologies and proven results." />
+    content="<?php echo e('Get expert web development services in ' . $locationLabel . ' with modern technologies and proven results.'); ?>" />
 
   <!-- Mobile Meta -->
   <meta name="format-detection" content="telephone=no" />
@@ -311,14 +335,14 @@ $companyInfo = getCompanyInfo();
               PROFESSIONAL WEBSITE DEVELOPMENT
             </h5>
             <h1 class="display-4 fw-bold mb-4 text-white">
-              Web Development Services for Your Business
+              <?php echo ((string) ($serviceInfo['title'] ?? '')) ?>
             </h1>
             <p class="lead mb-4 text-white" style="font-size: 1.35rem">
               Unleash the power of professional website development and take
               your business to the next level. Our expert team specializes in
               creating stunning, responsive websites that drive results. With
-              10+ years of experience, we help businesses across the USA
-              establish a strong online presence and dominate search results.
+              10+ years of experience, we help businesses <?php echo e($locationPhrase); ?>
+              establish a strong online presence and dominate local search results.
             </p>
           </div>
         </div>
@@ -656,11 +680,11 @@ $companyInfo = getCompanyInfo();
   <section class="how-we-help">
     <div class="container">
       <div class="text-center mb-5">
-        <h2 class="fw-bold">How We Can Help Your Business Grow Online</h2>
+        <h2 class="fw-bold">How We Help Businesses in <?php echo e($locationLabel); ?> Grow Online</h2>
         <p class="lead text-muted">
           Choosing the right website development partner is crucial for your
-          business success. Here's what sets us apart and why businesses trust
-          us with their web development needs.
+          business success. Here's what sets us apart and why businesses in
+          <?php echo e($locationLabel); ?> trust us with their web development needs.
         </p>
       </div>
 
@@ -673,7 +697,7 @@ $companyInfo = getCompanyInfo();
               We prioritize your website security with industry-leading
               practices. Our websites are built with enterprise-grade security
               protocols, SSL certificates, and regular security updates to
-              protect your business and customer data.
+              protect your business and customer data <?php echo e($locationPhrase); ?>.
             </p>
           </div>
         </div>
@@ -685,7 +709,7 @@ $companyInfo = getCompanyInfo();
             <p>
               With over 10 years of experience and 500+ successful projects,
               we have established partnerships with leading companies across
-              the USA. Our portfolio speaks for our expertise and commitment
+              <?php echo e($locationLabel); ?>. Our portfolio speaks for our expertise and commitment
               to excellence in website development.
             </p>
           </div>
@@ -698,7 +722,7 @@ $companyInfo = getCompanyInfo();
             <p>
               Our expert team provides 24/7 support to ensure your website
               runs smoothly. We believe in building long-term relationships
-              and being available whenever you need us for updates,
+              and being available whenever you need us in <?php echo e($locationLabel); ?> for updates,
               maintenance, or emergency support.
             </p>
           </div>
@@ -712,7 +736,7 @@ $companyInfo = getCompanyInfo();
               Every business is unique, and so are our websites. We take time
               to understand your specific requirements and create tailored web
               solutions that align with your business goals and budget
-              constraints.
+              constraints in <?php echo e($locationLabel); ?>.
             </p>
           </div>
         </div>
@@ -725,7 +749,7 @@ $companyInfo = getCompanyInfo();
               Stay ahead of the competition with the latest web technologies.
               We use responsive design, fast loading speeds, SEO optimization,
               and modern frameworks to build scalable, future-proof websites
-              for your business.
+              for your business <?php echo e($locationPhrase); ?>.
             </p>
           </div>
         </div>
@@ -737,7 +761,7 @@ $companyInfo = getCompanyInfo();
             <p>
               We believe in complete transparency. Regular progress reports,
               clear documentation, and open communication channels ensure
-              you're always informed about your website development status and
+              you're always informed about your website development status in <?php echo e($locationLabel); ?> and
               can provide feedback at any stage.
             </p>
           </div>
@@ -751,11 +775,11 @@ $companyInfo = getCompanyInfo();
     <div class="container">
       <div class="text-center mb-5">
         <h2 class="fw-bold">
-          Why Choose EverythingEasy Technology for Web Development
+          Why Choose EverythingEasy Technology for Web Development in <?php echo e($locationLabel); ?>
         </h2>
         <p class="lead text-muted">
           Finding the right website development partner can make or break your
-          online success. Here's why businesses across the USA choose
+          online success. Here's why businesses across <?php echo e($locationLabel); ?> choose
           EverythingEasy Technology.
         </p>
       </div>
@@ -848,10 +872,10 @@ $companyInfo = getCompanyInfo();
   <section class="faq-section">
     <div class="container">
       <div class="text-center mb-5">
-        <h2 class="fw-bold">Web Development: Frequently Asked Questions</h2>
+        <h2 class="fw-bold">Web Development in <?php echo e($locationLabel); ?>: Frequently Asked Questions</h2>
         <p class="lead text-muted">
           Welcome to our FAQ section, where we aim to provide answers to
-          common questions about our website development services. If you have
+          common questions about our website development services in <?php echo e($locationLabel); ?>. If you have
           a question that's not covered here, please feel free to reach out to
           us directly.
         </p>
@@ -1046,7 +1070,7 @@ $companyInfo = getCompanyInfo();
         <div class="col-lg-8">
           <h3 class="fw-bold mb-3">Ready to Start Your Website Project?</h3>
           <p class="lead text-muted mb-lg-0">
-            Let's discuss how we can help transform your business with an
+            Let's discuss how we can help transform your business in <?php echo e($locationLabel); ?> with an
             innovative website. Contact us today for a free consultation and
             quote.
           </p>
@@ -1062,10 +1086,10 @@ $companyInfo = getCompanyInfo();
   <!-- CTA Section -->
   <section class="boost-cta">
     <div class="container">
-      <h2>Ready to Launch Your Website?</h2>
+      <h2>Ready to Launch Your Website in <?php echo e($locationLabel); ?>?</h2>
       <p>
         Get affordable and 100% result-oriented website development services
-        with the latest technologies and best practices. Let us help you boost
+        in <?php echo e($locationLabel); ?> with the latest technologies and best practices. Let us help you boost
         your online presence and stand out with innovative web solutions.
       </p>
       <a href="tel:+18443299832" class="btn btn-warning btn-lg me-3">
