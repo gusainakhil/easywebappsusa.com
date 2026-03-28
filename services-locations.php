@@ -7,7 +7,10 @@ $locationCards = [];
 if (dbTableExists('locations')) {
   try {
     $stmt = getDbConnection()->query(
-      'SELECT `location_name`, `city_name`, `state`, `slug`, `meta_description` FROM `locations` ORDER BY `random`() LIMIT 100',
+'SELECT `location_name`, `city_name`, `state`, `slug`, `meta_description`
+FROM `locations`
+ORDER BY RAND()
+LIMIT 100'
     );
     $rows = $stmt->fetchAll();
 
