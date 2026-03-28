@@ -13,4 +13,10 @@ Options -Indexes
   RewriteRule ^location/?$ services-locations.php [L,QSA,NC]
   # Example: /location/new-york -> /web-development.php?slug=new-york
   RewriteRule ^location/([A-Za-z0-9-]+)/?$ web-development.php?slug=$1 [L,QSA,NC]
+
+  # SEO-friendly blog routes
+  # /blog -> blog listing page
+  RewriteRule ^blog/?$ blog.php [L,QSA,NC]
+  # /blog/my-first-post -> blog detail page
+  RewriteRule ^blog/([A-Za-z0-9-]+)/?$ blog-detail.php?slug=$1 [L,QSA,NC]
 </IfModule>
