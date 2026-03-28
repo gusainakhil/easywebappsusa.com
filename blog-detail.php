@@ -2,6 +2,24 @@
 require __DIR__ . '/config.php';
 $companyInfo = getCompanyInfo();
 
+function blogDetailImageUrl(array $row): string
+{
+  $raw = trim((string) (($row['image'] ?? '') !== '' ? $row['image'] : ($row['image_url'] ?? '')));
+  if ($raw === '') {
+    return '';
+  }
+
+  if (preg_match('#^https?://#i', $raw) === 1 || str_starts_with($raw, '/')) {
+    return $raw;
+  }
+
+  if (str_starts_with($raw, 'uploads/')) {
+    return '/' . $raw;
+  }
+
+  return '/' . ltrim($raw, '/');
+}
+
 $blogId = (int) ($_GET['id'] ?? 0);
 $blogSlug = trim((string) ($_GET['slug'] ?? ''));
 $blog = null;
@@ -37,7 +55,7 @@ if (dbTableExists('blogs')) {
 
       $titleCol = pickFirstExistingColumn($columns, ['title', 'blog_title', 'name']) ?? 'id';
       $excerptCol = pickFirstExistingColumn($columns, ['excerpt', 'short_description', 'summary', 'description']);
-      $imageCol = pickFirstExistingColumn($columns, ['image', 'featured_image', 'thumbnail', 'banner_image']);
+      $imageCol = pickFirstExistingColumn($columns, ['image', 'image_url', 'featured_image', 'thumbnail', 'banner_image']);
       $orderCol = $createdAtCol ?? 'id';
 
       $relatedSql = 'SELECT `id`, `' . $titleCol . '` AS `title`, '
@@ -77,6 +95,10 @@ if (!is_array($blog)) {
     'meta_keywords' => 'blog, article',
     'category' => '',
   ];
+}
+
+if (empty($blog['image']) && !empty($blog['image_url'])) {
+  $blog['image'] = $blog['image_url'];
 }
 
 $blogTitle = (string) ($blog['title'] ?? 'Blog Post');
@@ -184,9 +206,10 @@ $canonicalUrl = !empty($blog['slug']) ? '/blog/' . rawurlencode((string) $blog['
               </div>
             </div>
 
-            <?php if (!empty($blog['image'])): ?>
+            <?php $mainImage = blogDetailImageUrl($blog); ?>
+            <?php if ($mainImage !== ''): ?>
             <img
-              src="<?php echo e($blog['image']); ?>"
+              src="<?php echo e($mainImage); ?>"
               alt="<?php echo e($blog['title']); ?>"
               class="img-fluid rounded mb-4"
               style="max-height: 500px; object-fit: cover; width: 100%;"
@@ -209,8 +232,9 @@ $canonicalUrl = !empty($blog['slug']) ? '/blog/' . rawurlencode((string) $blog['
                 <?php $relatedPath = !empty($related['slug']) ? '/blog/' . rawurlencode((string) $related['slug']) : '/blog-detail.php?id=' . (int) $related['id']; ?>
                 <div class="col-md-6 mb-4">
                   <div class="related-card h-100 p-4 bg-white rounded">
-                    <?php if (!empty($related['image'])): ?>
-                    <div style="height: 150px; border-radius: 8px; margin-bottom: 1rem; background-image: url('<?php echo e($related['image']); ?>'); background-size: cover; background-position: center;"></div>
+                    <?php $relatedImage = blogDetailImageUrl($related); ?>
+                    <?php if ($relatedImage !== ''): ?>
+                    <div style="height: 150px; border-radius: 8px; margin-bottom: 1rem; background-image: url('<?php echo e($relatedImage); ?>'); background-size: cover; background-position: center;"></div>
                     <?php else: ?>
                     <div style="height: 150px; background: #f0f0f0; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; color: #ccc;">
                       <i class="fas fa-image" style="font-size: 2rem;"></i>

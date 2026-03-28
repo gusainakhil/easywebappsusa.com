@@ -2,6 +2,24 @@
 require __DIR__ . '/config.php';
 $companyInfo = getCompanyInfo();
 
+function blogImageUrl(array $blog): string
+{
+  $raw = trim((string) (($blog['image'] ?? '') !== '' ? $blog['image'] : ($blog['image_url'] ?? '')));
+  if ($raw === '') {
+    return '';
+  }
+
+  if (preg_match('#^https?://#i', $raw) === 1 || str_starts_with($raw, '/')) {
+    return $raw;
+  }
+
+  if (str_starts_with($raw, 'uploads/')) {
+    return '/' . $raw;
+  }
+
+  return '/' . ltrim($raw, '/');
+}
+
 // Fetch blogs from database
 $blogs = [];
 if (dbTableExists('blogs')) {
@@ -15,7 +33,7 @@ if (dbTableExists('blogs')) {
     $authorCol = pickFirstExistingColumn($columns, ['author', 'created_by', 'writer']);
     $createdAtCol = pickFirstExistingColumn($columns, ['created_at', 'createdon', 'created_on', 'date']);
     $viewsCol = pickFirstExistingColumn($columns, ['views', 'view_count', 'total_views']);
-    $imageCol = pickFirstExistingColumn($columns, ['image', 'featured_image', 'thumbnail', 'banner_image']);
+    $imageCol = pickFirstExistingColumn($columns, ['image', 'image_url', 'featured_image', 'thumbnail', 'banner_image']);
 
     if ($idCol !== null && $titleCol !== null) {
       $select = [
@@ -186,8 +204,9 @@ if (dbTableExists('blogs')) {
             <div class="col-lg-4 col-md-6 mb-4">
               <div class="blog-card h-100">
                 <div class="blog-image">
-                  <?php if (!empty($blog['image'])): ?>
-                    <img src="<?php echo e($blog['image']); ?>" alt="<?php echo e($blog['title']); ?>" />
+                  <?php $imageUrl = blogImageUrl($blog); ?>
+                  <?php if ($imageUrl !== ''): ?>
+                    <img src="<?php echo e($imageUrl); ?>" alt="<?php echo e($blog['title']); ?>" />
                   <?php else: ?>
                     <i class="fas fa-newspaper"></i>
                   <?php endif; ?>

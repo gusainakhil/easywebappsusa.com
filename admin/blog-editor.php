@@ -20,37 +20,43 @@ function compressAndStoreImage(array $file): ?string
     }
 
     $tmp = (string) ($file['tmp_name'] ?? '');
-    if ($tmp === '' || !is_uploaded_file($tmp)) {
+    if ($tmp === '') {
         return null;
     }
 
-    $info = @getimagesize($tmp);
-    if ($info === false) {
-        return null;
+    $originalName = (string) ($file['name'] ?? 'upload');
+    $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+    if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true)) {
+        $ext = 'jpg';
     }
 
-    $uploadsDir = __DIR__ . '/uploads';
-    if (!is_dir($uploadsDir)) {
-        mkdir($uploadsDir, 0755, true);
+    $publicUploadsDir = dirname(__DIR__) . '/uploads/blogs';
+    if (!is_dir($publicUploadsDir) && !@mkdir($publicUploadsDir, 0755, true) && !is_dir($publicUploadsDir)) {
+        return null;
     }
 
     $name = 'blog_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4));
-    $target = $uploadsDir . '/' . $name . '.jpg';
+    $targetJpg = $publicUploadsDir . '/' . $name . '.jpg';
+    $targetOriginal = $publicUploadsDir . '/' . $name . '.' . $ext;
 
+    // Prefer compressed JPEG output; fallback to original upload when conversion fails.
     $data = @file_get_contents($tmp);
-    if ($data === false) {
-        return null;
+    if ($data !== false && function_exists('imagecreatefromstring')) {
+        $img = @imagecreatefromstring($data);
+        if ($img !== false) {
+            if (@imagejpeg($img, $targetJpg, 72)) {
+                imagedestroy($img);
+                return '/uploads/blogs/' . basename($targetJpg);
+            }
+            imagedestroy($img);
+        }
     }
 
-    $img = @imagecreatefromstring($data);
-    if ($img === false) {
-        return null;
+    if (@move_uploaded_file($tmp, $targetOriginal)) {
+        return '/uploads/blogs/' . basename($targetOriginal);
     }
 
-    imagejpeg($img, $target, 72);
-    imagedestroy($img);
-
-    return 'uploads/' . basename($target);
+    return null;
 }
 
 function normalizeTagsLite(string $tags): string
