@@ -76,26 +76,26 @@ $companyInfo = getCompanyInfo();
         <div class="footer-links">
           <h6 class="fw-bold mb-3">Quick Links</h6>
           <ul class="list-unstyled">
-            <li><a href="index.php" class="text-decoration-none">Home</a></li>
+            <li><a href="/index.php" class="text-decoration-none">Home</a></li>
             <li>
-              <a href="about.php" class="text-decoration-none">About Us</a>
+              <a href="/about.php" class="text-decoration-none">About Us</a>
             </li>
             <li>
-              <a href="services.php" class="text-decoration-none"
+              <a href="/services.php" class="text-decoration-none"
                 >Our Services</a
               >
             </li>
             <li>
-              <a href="blog.php" class="text-decoration-none">Blog</a>
+              <a href="/blog.php" class="text-decoration-none">Blog</a>
             </li>
             <li>
-              <a href="contact.php" class="text-decoration-none">Contact Us</a>
+              <a href="/contact.php" class="text-decoration-none">Contact Us</a>
             </li>
             <li>
-              <a href="career.php" class="text-decoration-none">Careers</a>
+              <a href="/career.php" class="text-decoration-none">Careers</a>
             </li>
             <li>
-              <a href="services-locations.php" class="text-decoration-none"
+              <a href="/services-locations.php" class="text-decoration-none"
                 >Services Location</a
               >
             </li>
@@ -109,17 +109,17 @@ $companyInfo = getCompanyInfo();
           <h6 class="fw-bold mb-3">Legal</h6>
           <ul class="list-unstyled">
             <li>
-              <a href="privacy-policy.php" class="text-decoration-none"
+              <a href="/privacy-policy.php" class="text-decoration-none"
                 >Privacy Policy</a
               >
             </li>
             <li>
-              <a href="terms-conditions.php" class="text-decoration-none"
+              <a href="/terms-conditions.php" class="text-decoration-none"
                 >Terms & Conditions</a
               >
             </li>
             <li>
-              <a href="return-refund-policy.php" class="text-decoration-none"
+              <a href="/return-refund-policy.php" class="text-decoration-none"
                 >Return & Refund</a
               >
             </li>
