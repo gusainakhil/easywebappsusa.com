@@ -3,7 +3,7 @@ require __DIR__ . '/config.php';
 $companyInfo = getCompanyInfo();
 ?>
 <!-- Footer -->
-<footer class="bg-dark text-white py-5">
+<footer class="bg-dark text-white py-5" style="background-color: #212529 !important; color: white;">
   <div class="container">
     <div class="row">
       <!-- About Section -->
