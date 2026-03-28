@@ -6,29 +6,55 @@ $blogId = (int) ($_GET['id'] ?? 0);
 $blogSlug = trim((string) ($_GET['slug'] ?? ''));
 $blog = null;
 $relatedBlogs = [];
+$slugCol = null;
+$createdAtCol = null;
 
 if (dbTableExists('blogs')) {
   try {
-    if ($blogSlug !== '') {
-      $stmt = getDbConnection()->prepare('SELECT * FROM `blogs` WHERE `slug` = :slug LIMIT 1');
+    $columns = dbTableColumns('blogs');
+    $slugCol = pickFirstExistingColumn($columns, ['slug', 'url_slug']);
+    $createdAtCol = pickFirstExistingColumn($columns, ['created_at', 'createdon', 'created_on', 'date']);
+
+    if ($blogSlug !== '' && $slugCol !== null) {
+      $stmt = getDbConnection()->prepare('SELECT * FROM `blogs` WHERE `' . $slugCol . '` = :slug LIMIT 1');
       $stmt->execute([':slug' => $blogSlug]);
       $blog = $stmt->fetch();
-    } elseif ($blogId > 0) {
+    }
+
+    if (!is_array($blog) && $blogId > 0) {
       $stmt = getDbConnection()->prepare('SELECT * FROM `blogs` WHERE `id` = :id LIMIT 1');
       $stmt->execute([':id' => $blogId]);
       $blog = $stmt->fetch();
     }
 
     if (is_array($blog) && (int) ($blog['id'] ?? 0) > 0) {
-      $canonicalPath = '/blog/' . rawurlencode((string) ($blog['slug'] ?? ''));
-      if (!empty($blog['slug']) && ($blogId > 0 || $blogSlug === '')) {
+      $rowSlug = $slugCol !== null ? (string) ($blog[$slugCol] ?? '') : '';
+      $canonicalPath = $rowSlug !== '' ? '/blog/' . rawurlencode($rowSlug) : '';
+      if ($canonicalPath !== '' && ($blogId > 0 || $blogSlug === '')) {
         header('Location: ' . $canonicalPath, true, 301);
         exit;
       }
 
-      $stmt = getDbConnection()->prepare('SELECT `id`, `slug`, `title`, `excerpt`, `image` FROM `blogs` WHERE `id` != :id ORDER BY `created_at` DESC LIMIT 6');
+      $titleCol = pickFirstExistingColumn($columns, ['title', 'blog_title', 'name']) ?? 'id';
+      $excerptCol = pickFirstExistingColumn($columns, ['excerpt', 'short_description', 'summary', 'description']);
+      $imageCol = pickFirstExistingColumn($columns, ['image', 'featured_image', 'thumbnail', 'banner_image']);
+      $orderCol = $createdAtCol ?? 'id';
+
+      $relatedSql = 'SELECT `id`, `' . $titleCol . '` AS `title`, '
+        . ($slugCol !== null ? '`' . $slugCol . '`' : "''") . ' AS `slug`, '
+        . ($excerptCol !== null ? '`' . $excerptCol . '`' : "''") . ' AS `excerpt`, '
+        . ($imageCol !== null ? '`' . $imageCol . '`' : "''") . ' AS `image` '
+        . 'FROM `blogs` WHERE `id` != :id ORDER BY `' . $orderCol . '` DESC LIMIT 6';
+
+      $stmt = getDbConnection()->prepare($relatedSql);
       $stmt->execute([':id' => $blog['id']]);
       $relatedBlogs = $stmt->fetchAll();
+
+      if ($slugCol !== null) {
+        $blog['slug'] = $rowSlug;
+      } elseif (!isset($blog['slug'])) {
+        $blog['slug'] = '';
+      }
     }
   } catch (Throwable $t) {
     error_log('Blog detail query failed: ' . $t->getMessage());

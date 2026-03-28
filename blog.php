@@ -6,8 +6,34 @@ $companyInfo = getCompanyInfo();
 $blogs = [];
 if (dbTableExists('blogs')) {
   try {
-    $stmt = getDbConnection()->query('SELECT `id`, `slug`, `title`, `excerpt`, `author`, `created_at`, `views`, `image` FROM `blogs` ORDER BY `created_at` DESC LIMIT 12');
-    $blogs = $stmt->fetchAll();
+    $columns = dbTableColumns('blogs');
+
+    $idCol = pickFirstExistingColumn($columns, ['id']);
+    $titleCol = pickFirstExistingColumn($columns, ['title', 'blog_title', 'name']);
+    $slugCol = pickFirstExistingColumn($columns, ['slug', 'url_slug']);
+    $excerptCol = pickFirstExistingColumn($columns, ['excerpt', 'short_description', 'summary', 'description']);
+    $authorCol = pickFirstExistingColumn($columns, ['author', 'created_by', 'writer']);
+    $createdAtCol = pickFirstExistingColumn($columns, ['created_at', 'createdon', 'created_on', 'date']);
+    $viewsCol = pickFirstExistingColumn($columns, ['views', 'view_count', 'total_views']);
+    $imageCol = pickFirstExistingColumn($columns, ['image', 'featured_image', 'thumbnail', 'banner_image']);
+
+    if ($idCol !== null && $titleCol !== null) {
+      $select = [
+        '`' . $idCol . '` AS `id`',
+        '`' . $titleCol . '` AS `title`',
+        ($slugCol !== null ? '`' . $slugCol . '`' : "''") . ' AS `slug`',
+        ($excerptCol !== null ? '`' . $excerptCol . '`' : "''") . ' AS `excerpt`',
+        ($authorCol !== null ? '`' . $authorCol . '`' : "''") . ' AS `author`',
+        ($createdAtCol !== null ? '`' . $createdAtCol . '`' : 'NOW()') . ' AS `created_at`',
+        ($viewsCol !== null ? '`' . $viewsCol . '`' : '0') . ' AS `views`',
+        ($imageCol !== null ? '`' . $imageCol . '`' : "''") . ' AS `image`',
+      ];
+
+      $orderBy = $createdAtCol !== null ? '`' . $createdAtCol . '` DESC' : '`' . $idCol . '` DESC';
+      $sql = 'SELECT ' . implode(', ', $select) . ' FROM `blogs` ORDER BY ' . $orderBy . ' LIMIT 12';
+      $stmt = getDbConnection()->query($sql);
+      $blogs = $stmt->fetchAll();
+    }
   } catch (Throwable $t) {
     error_log('Blog query failed: ' . $t->getMessage());
   }
