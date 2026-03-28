@@ -1,0 +1,16 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Serve existing files/directories directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # SEO-friendly location routes
+  RewriteRule ^location/?$ services-locations.php [L,QSA,NC]
+  # Example: /location/new-york -> /web-development.php?slug=new-york
+  RewriteRule ^location/([A-Za-z0-9-]+)/?$ web-development.php?slug=$1 [L,QSA,NC]
+</IfModule>
