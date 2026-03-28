@@ -73,14 +73,16 @@ function toAbsoluteUrl(string $baseUrl, string $path): string
     return rtrim($baseUrl, '/') . $cleanPath;
 }
 
-function addSitemapUrl(array &$urls, string $loc, ?string $lastmod, string $changefreq, string $priority): void
+function writeSitemapUrl($handle, string $loc, ?string $lastmod, string $changefreq, string $priority): void
 {
-    $urls[$loc] = [
-        'loc' => $loc,
-        'lastmod' => $lastmod,
-        'changefreq' => $changefreq,
-        'priority' => $priority,
-    ];
+    fwrite($handle, "  <url>\n");
+    fwrite($handle, '    <loc>' . xmlEscape($loc) . "</loc>\n");
+    if (!empty($lastmod)) {
+        fwrite($handle, '    <lastmod>' . xmlEscape($lastmod) . "</lastmod>\n");
+    }
+    fwrite($handle, '    <changefreq>' . xmlEscape($changefreq) . "</changefreq>\n");
+    fwrite($handle, '    <priority>' . xmlEscape($priority) . "</priority>\n");
+    fwrite($handle, "  </url>\n");
 }
 
 $defaultBaseUrl = 'https://easywebappsusa.com';
@@ -106,7 +108,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $rootDir = dirname(__DIR__);
         $sitemapPath = $rootDir . '/sitemap.xml';
-        $urls = [];
+        $tmpPath = $sitemapPath . '.tmp';
+        $handle = fopen($tmpPath, 'wb');
+        if ($handle === false) {
+            throw new RuntimeException('Could not open sitemap.xml for writing. Please check file permissions.');
+        }
+
+        $totalUrls = 0;
+        $preview = [];
+
+        fwrite($handle, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        fwrite($handle, "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n");
+
+        $appendUrl = static function (string $path, ?string $lastmod, string $changefreq, string $priority) use (&$totalUrls, &$preview, $baseUrl, $handle): void {
+            $loc = toAbsoluteUrl($baseUrl, $path);
+            writeSitemapUrl($handle, $loc, $lastmod, $changefreq, $priority);
+            $totalUrls++;
+            if (count($preview) < 12) {
+                $preview[] = $loc;
+            }
+        };
 
         $staticPaths = [
             '/',
@@ -127,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($staticPaths as $path) {
             $fullPath = $path === '/' ? ($rootDir . '/index.php') : ($rootDir . '/' . ltrim($path, '/'));
             $lastmod = file_exists($fullPath) ? date('c', (int) filemtime($fullPath)) : date('c');
-            addSitemapUrl($urls, toAbsoluteUrl($baseUrl, $path), $lastmod, 'weekly', $path === '/' ? '1.0' : '0.8');
+            $appendUrl($path, $lastmod, 'weekly', $path === '/' ? '1.0' : '0.8');
         }
 
         if (sitemapTableExists('blogs')) {
@@ -151,8 +172,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $orderCol = $updatedCol ?? $createdCol ?? $idCol;
                 $sql .= ' ORDER BY `' . $orderCol . '` DESC';
 
-                $rows = dbLite()->query($sql)->fetchAll();
-                foreach ($rows as $row) {
+                $pdo = dbLite();
+                $resetBuffering = false;
+                if (defined('PDO::MYSQL_ATTR_USE_BUFFERED_QUERY')) {
+                    $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+                    $resetBuffering = true;
+                }
+
+                $stmt = $pdo->query($sql);
+                while ($row = $stmt->fetch()) {
                     $id = (int) ($row['id'] ?? 0);
                     if ($id <= 0) {
                         continue;
@@ -165,7 +193,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     $lastmodRaw = trim((string) ($row['lastmod'] ?? ''));
                     $lastmod = $lastmodRaw !== '' ? date('c', strtotime($lastmodRaw)) : date('c');
-                    addSitemapUrl($urls, toAbsoluteUrl($baseUrl, $path), $lastmod, 'weekly', '0.7');
+                    $appendUrl($path, $lastmod, 'weekly', '0.7');
+                }
+
+                if ($resetBuffering) {
+                    $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
                 }
             }
         }
@@ -190,8 +222,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $sql .= ' ORDER BY `' . $orderCol . '` DESC';
                 }
 
-                $rows = dbLite()->query($sql)->fetchAll();
-                foreach ($rows as $row) {
+                $pdo = dbLite();
+                $resetBuffering = false;
+                if (defined('PDO::MYSQL_ATTR_USE_BUFFERED_QUERY')) {
+                    $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+                    $resetBuffering = true;
+                }
+
+                $stmt = $pdo->query($sql);
+                while ($row = $stmt->fetch()) {
                     $slug = trim((string) ($row['slug'] ?? ''));
                     if ($slug === '') {
                         $slug = slugifySitemap((string) ($row['name'] ?? ''));
@@ -204,42 +243,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $path = '/location/' . rawurlencode($slug);
                     $lastmodRaw = trim((string) ($row['lastmod'] ?? ''));
                     $lastmod = $lastmodRaw !== '' ? date('c', strtotime($lastmodRaw)) : date('c');
-                    addSitemapUrl($urls, toAbsoluteUrl($baseUrl, $path), $lastmod, 'weekly', '0.7');
+                    $appendUrl($path, $lastmod, 'weekly', '0.7');
+                }
+
+                if ($resetBuffering) {
+                    $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
                 }
             }
         }
 
-        ksort($urls);
+        fwrite($handle, "</urlset>\n");
+        fclose($handle);
 
-        $xml = [];
-        $xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
-        $xml[] = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-
-        foreach ($urls as $u) {
-            $xml[] = '  <url>';
-            $xml[] = '    <loc>' . xmlEscape((string) $u['loc']) . '</loc>';
-            if (!empty($u['lastmod'])) {
-                $xml[] = '    <lastmod>' . xmlEscape((string) $u['lastmod']) . '</lastmod>';
+        if (!rename($tmpPath, $sitemapPath)) {
+            if (!copy($tmpPath, $sitemapPath)) {
+                @unlink($tmpPath);
+                throw new RuntimeException('Could not finalize sitemap.xml. Please check file permissions.');
             }
-            $xml[] = '    <changefreq>' . xmlEscape((string) $u['changefreq']) . '</changefreq>';
-            $xml[] = '    <priority>' . xmlEscape((string) $u['priority']) . '</priority>';
-            $xml[] = '  </url>';
+            @unlink($tmpPath);
         }
-
-        $xml[] = '</urlset>';
-
-        $written = file_put_contents($sitemapPath, implode("\n", $xml) . "\n");
-        if ($written === false) {
-            throw new RuntimeException('Could not write sitemap.xml. Please check file permissions.');
-        }
-
-        $totalUrls = count($urls);
-        $preview = array_slice(array_values(array_map(static function (array $i): string {
-            return (string) $i['loc'];
-        }, $urls)), 0, 12);
 
         $message = 'Sitemap generated successfully at /sitemap.xml with ' . $totalUrls . ' URLs.';
     } catch (Throwable $t) {
+        if (isset($handle) && is_resource($handle)) {
+            fclose($handle);
+        }
+        if (isset($tmpPath) && is_string($tmpPath) && file_exists($tmpPath)) {
+            @unlink($tmpPath);
+        }
         $error = 'Sitemap generation failed: ' . $t->getMessage();
     }
 }
