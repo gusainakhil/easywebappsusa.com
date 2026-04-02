@@ -85,6 +85,17 @@ function writeSitemapUrl($handle, string $loc, ?string $lastmod, string $changef
     fwrite($handle, "  </url>\n");
 }
 
+function normalizeLastmod(string $raw): string
+{
+    $raw = trim($raw);
+    if ($raw === '') {
+        return date('c');
+    }
+
+    $ts = strtotime($raw);
+    return $ts !== false ? date('c', $ts) : date('c');
+}
+
 $defaultBaseUrl = 'https://easywebappsusa.com';
 if (!empty($_SERVER['HTTP_HOST'])) {
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
@@ -108,21 +119,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $rootDir = dirname(__DIR__);
         $sitemapPath = $rootDir . '/sitemap.xml';
-        $tmpPath = $sitemapPath . '.tmp';
-        $handle = fopen($tmpPath, 'wb');
-        if ($handle === false) {
-            throw new RuntimeException('Could not open sitemap.xml for writing. Please check file permissions.');
-        }
+        $sitemapTmpPath = $sitemapPath . '.tmp';
+        $maxUrlsPerFile = 40000;
+        $sitemapFiles = [];
+        $fileHandle = null;
+        $fileIndex = 0;
+        $urlsInCurrentFile = 0;
 
         $totalUrls = 0;
         $preview = [];
 
-        fwrite($handle, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        fwrite($handle, "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n");
+        $openSitemapFile = static function () use (&$fileHandle, &$fileIndex, &$urlsInCurrentFile, &$sitemapFiles, $rootDir): void {
+            if (is_resource($fileHandle)) {
+                fwrite($fileHandle, "</urlset>\n");
+                fclose($fileHandle);
+            }
 
-        $appendUrl = static function (string $path, ?string $lastmod, string $changefreq, string $priority) use (&$totalUrls, &$preview, $baseUrl, $handle): void {
+            $fileIndex++;
+            $fileName = 'sitemap' . $fileIndex . '.xml';
+            $finalPath = $rootDir . '/' . $fileName;
+            $tmpPath = $finalPath . '.tmp';
+            $fileHandle = fopen($tmpPath, 'wb');
+            if ($fileHandle === false) {
+                throw new RuntimeException('Could not open ' . $fileName . ' for writing. Please check file permissions.');
+            }
+
+            fwrite($fileHandle, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            fwrite($fileHandle, "<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n");
+
+            $sitemapFiles[] = [
+                'name' => $fileName,
+                'tmp' => $tmpPath,
+                'final' => $finalPath,
+                'public' => '/' . $fileName,
+            ];
+            $urlsInCurrentFile = 0;
+        };
+
+        $appendUrl = static function (string $path, ?string $lastmod, string $changefreq, string $priority) use (&$totalUrls, &$preview, $baseUrl, &$fileHandle, &$urlsInCurrentFile, $maxUrlsPerFile, $openSitemapFile): void {
+            if (!is_resource($fileHandle) || $urlsInCurrentFile >= $maxUrlsPerFile) {
+                $openSitemapFile();
+            }
+
             $loc = toAbsoluteUrl($baseUrl, $path);
-            writeSitemapUrl($handle, $loc, $lastmod, $changefreq, $priority);
+            writeSitemapUrl($fileHandle, $loc, $lastmod, $changefreq, $priority);
+            $urlsInCurrentFile++;
             $totalUrls++;
             if (count($preview) < 12) {
                 $preview[] = $loc;
@@ -192,7 +233,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         : '/blog-detail.php?id=' . $id;
 
                     $lastmodRaw = trim((string) ($row['lastmod'] ?? ''));
-                    $lastmod = $lastmodRaw !== '' ? date('c', strtotime($lastmodRaw)) : date('c');
+                    $lastmod = normalizeLastmod($lastmodRaw);
                     $appendUrl($path, $lastmod, 'weekly', '0.7');
                 }
 
@@ -242,7 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     $path = '/location/' . rawurlencode($slug);
                     $lastmodRaw = trim((string) ($row['lastmod'] ?? ''));
-                    $lastmod = $lastmodRaw !== '' ? date('c', strtotime($lastmodRaw)) : date('c');
+                    $lastmod = normalizeLastmod($lastmodRaw);
                     $appendUrl($path, $lastmod, 'weekly', '0.7');
                 }
 
@@ -252,25 +293,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        fwrite($handle, "</urlset>\n");
-        fclose($handle);
+        if (is_resource($fileHandle)) {
+            fwrite($fileHandle, "</urlset>\n");
+            fclose($fileHandle);
+            $fileHandle = null;
+        }
 
-        if (!rename($tmpPath, $sitemapPath)) {
-            if (!copy($tmpPath, $sitemapPath)) {
+        $generatedCount = 0;
+        foreach ($sitemapFiles as $fileMeta) {
+            $tmpPath = (string) ($fileMeta['tmp'] ?? '');
+            $finalPath = (string) ($fileMeta['final'] ?? '');
+            if ($tmpPath === '' || $finalPath === '') {
+                continue;
+            }
+
+            if (!rename($tmpPath, $finalPath)) {
+                if (!copy($tmpPath, $finalPath)) {
+                    @unlink($tmpPath);
+                    throw new RuntimeException('Could not finalize ' . basename($finalPath) . '. Please check file permissions.');
+                }
                 @unlink($tmpPath);
+            }
+            $generatedCount++;
+        }
+
+        $indexHandle = fopen($sitemapTmpPath, 'wb');
+        if ($indexHandle === false) {
+            throw new RuntimeException('Could not open sitemap.xml for writing. Please check file permissions.');
+        }
+
+        fwrite($indexHandle, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        fwrite($indexHandle, "<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n");
+        $indexLastmod = date('c');
+        foreach ($sitemapFiles as $fileMeta) {
+            $publicPath = (string) ($fileMeta['public'] ?? '');
+            if ($publicPath === '') {
+                continue;
+            }
+
+            fwrite($indexHandle, "  <sitemap>\n");
+            fwrite($indexHandle, '    <loc>' . xmlEscape(toAbsoluteUrl($baseUrl, $publicPath)) . "</loc>\n");
+            fwrite($indexHandle, '    <lastmod>' . xmlEscape($indexLastmod) . "</lastmod>\n");
+            fwrite($indexHandle, "  </sitemap>\n");
+        }
+        fwrite($indexHandle, "</sitemapindex>\n");
+        fclose($indexHandle);
+
+        if (!rename($sitemapTmpPath, $sitemapPath)) {
+            if (!copy($sitemapTmpPath, $sitemapPath)) {
+                @unlink($sitemapTmpPath);
                 throw new RuntimeException('Could not finalize sitemap.xml. Please check file permissions.');
             }
-            @unlink($tmpPath);
+            @unlink($sitemapTmpPath);
         }
 
-        $message = 'Sitemap generated successfully at /sitemap.xml with ' . $totalUrls . ' URLs.';
+        $message = 'Sitemap generated successfully: /sitemap.xml + ' . $generatedCount . ' sitemap file(s) with ' . $totalUrls . ' URLs total (max 40000 per file).';
     } catch (Throwable $t) {
-        if (isset($handle) && is_resource($handle)) {
-            fclose($handle);
+        if (isset($fileHandle) && is_resource($fileHandle)) {
+            fwrite($fileHandle, "</urlset>\n");
+            fclose($fileHandle);
         }
-        if (isset($tmpPath) && is_string($tmpPath) && file_exists($tmpPath)) {
-            @unlink($tmpPath);
+
+        if (isset($sitemapTmpPath) && is_string($sitemapTmpPath) && file_exists($sitemapTmpPath)) {
+            @unlink($sitemapTmpPath);
         }
+
+        if (isset($sitemapFiles) && is_array($sitemapFiles)) {
+            foreach ($sitemapFiles as $fileMeta) {
+                $tmpPath = (string) ($fileMeta['tmp'] ?? '');
+                if ($tmpPath !== '' && file_exists($tmpPath)) {
+                    @unlink($tmpPath);
+                }
+            }
+        }
+
         $error = 'Sitemap generation failed: ' . $t->getMessage();
     }
 }
