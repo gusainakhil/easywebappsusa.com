@@ -347,7 +347,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             @unlink($sitemapTmpPath);
         }
 
-        $message = 'Sitemap generated successfully: /sitemap.xml + ' . $generatedCount . ' sitemap file(s) with ' . $totalUrls . ' URLs total (max 40000 per file).';
+        $message = 'Sitemap generated successfully: /sitemap.xml + ' . $generatedCount . ' sitemap file(s) with ' . $totalUrls . ' URLs total (max 10000 per file).';
     } catch (Throwable $t) {
         if (isset($fileHandle) && is_resource($fileHandle)) {
             fwrite($fileHandle, "</urlset>\n");
