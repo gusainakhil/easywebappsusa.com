@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $rootDir = dirname(__DIR__);
         $sitemapPath = $rootDir . '/sitemap.xml';
         $sitemapTmpPath = $sitemapPath . '.tmp';
-        $maxUrlsPerFile = 40000;
+        $maxUrlsPerFile = 10000;
         $sitemapFiles = [];
         $fileHandle = null;
         $fileIndex = 0;
